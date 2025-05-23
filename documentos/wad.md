@@ -69,7 +69,162 @@ Este é o meu modelo.
 *Posicione também o modelo físico com o Schema do BD (arquivo .sql)*
 
 ### 3.1.1 BD e Models (Semana 5)
-*Descreva aqui os Models implementados no sistema web*
+# Models do Sistema de Biblioteca
+
+O sistema possui 4 models principais que implementam a lógica de negócio para um sistema de gerenciamento de biblioteca. Todos seguem o padrão de arquitetura em camadas, separando a lógica de domínio dos repositórios de dados.
+
+---
+
+## 1. AutorModel (`autorModel.js`)
+
+**Responsabilidade:** Gerenciar dados e operações relacionadas aos autores de livros.
+
+### Atributos da Classe:
+- `id`: Identificador único do autor
+- `nome`: Nome completo do autor (**obrigatório**, máx. 100 caracteres)
+- `nacionalidade`: País de origem (opcional, máx. 50 caracteres)
+- `data_nascimento`: Data de nascimento (opcional)
+
+### Métodos Estáticos (CRUD):
+- `getAll()`: Retorna todos os autores
+- `getById(id)`: Busca autor por ID
+- `create(data)`: Cria novo autor com validações
+- `update(id, data)`: Atualiza dados do autor
+- `delete(id)`: Remove autor do sistema
+- `getByNacionalidade(nacionalidade)`: Filtra autores por nacionalidade
+- `getAutoresComLivros()`: Retorna autores que possuem livros cadastrados
+
+### Métodos de Instância:
+- `getIdade()`: Calcula idade atual do autor baseada na data de nascimento
+- `toJSON()`: Serialização personalizada incluindo idade calculada
+
+### Validações Implementadas:
+- Nome obrigatório e não vazio
+- Limite de caracteres para `nome` (100) e `nacionalidade` (50)
+- Sanitização de dados (`trim`)
+
+---
+
+## 2. CategoriaModel (`categoriaModel.js`)
+
+**Responsabilidade:** Gerenciar categorias de livros e suas associações.
+
+### Atributos da Classe:
+- `id`: Identificador único da categoria
+- `nome`: Nome da categoria (**obrigatório**, máx. 50 caracteres, **único**)
+- `descricao`: Descrição detalhada (opcional)
+- `total_livros`: Contador de livros associados
+
+### Métodos Estáticos (CRUD):
+- `getAll()`: Lista todas as categorias
+- `getById(id)`: Busca categoria por ID
+- `create(data)`: Cria nova categoria
+- `update(id, data)`: Atualiza categoria existente
+- `delete(id)`: Remove categoria
+- `getByNome(nome)`: Busca por nome
+- `getCategoriasComLivros()`: Categorias que possuem livros
+- `getLivrosByCategoria(categoriaId)`: Lista livros de uma categoria
+
+### Métodos de Instância:
+- `temLivros()`: Verifica se a categoria possui livros associados
+- `toJSON()`: Inclui flag `tem_livros` na serialização
+
+### Validações Implementadas:
+- Nome obrigatório e único no sistema
+- Limite de 50 caracteres para o nome
+- Verificação de duplicidade antes de criar/atualizar
+
+---
+
+## 3. LivroModel (`livroModel.js`)
+
+**Responsabilidade:** Gerenciar informações dos livros e suas relações com autores.
+
+### Atributos da Classe:
+- `id`: Identificador único do livro
+- `titulo`: Título do livro (**obrigatório**, máx. 200 caracteres)
+- `ano_publicacao`: Ano de publicação (**obrigatório**, válido)
+- `paginas`: Número de páginas (**obrigatório**, > 0)
+- `isbn`: Código ISBN (opcional, máx. 20 caracteres, **único**)
+- `autor_id`: Referência ao autor (**obrigatório**)
+- `autor_nome`: Nome do autor (preenchido via join)
+- `categorias`: Array de categorias associadas
+
+### Métodos Estáticos (CRUD):
+- `getAll()`: Lista todos os livros
+- `getById(id)`: Busca livro por ID
+- `create(data)`: Cria novo livro
+- `update(id, data)`: Atualiza livro existente
+- `delete(id)`: Remove livro
+- `getByAutor(autorId)`: Livros de um autor específico
+- `getByAno(ano)`: Livros publicados em determinado ano
+- `getByIsbn(isbn)`: Busca por ISBN
+- `getWithCategorias(id)`: Livro com suas categorias
+
+### Métodos de Instância:
+- `getIdadeLivro()`: Calcula quantos anos tem o livro
+- `isClassico()`: Determina se é um clássico (50+ anos)
+- `toJSON()`: Inclui campos calculados na serialização
+
+### Validações Implementadas:
+- Título obrigatório (máx. 200 caracteres)
+- Ano válido (não pode ser futuro)
+- Páginas obrigatório (> 0)
+- Autor obrigatório
+- ISBN único quando fornecido
+- Conversão de tipos numéricos
+
+---
+
+## 4. LivroCategoriaModel (`livroCategoriaModel.js`)
+
+**Responsabilidade:** Gerenciar o relacionamento many-to-many entre livros e categorias.
+
+### Atributos da Classe:
+- `id`: Identificador da associação
+- `livro_id`: ID do livro
+- `categoria_id`: ID da categoria
+- `livro_titulo`: Título do livro (via join)
+- `categoria_nome`: Nome da categoria (via join)
+
+### Métodos Estáticos:
+- `getAll()`: Lista todas as associações
+- `getById(id)`: Busca associação por ID
+- `create(livroId, categoriaId)`: Cria nova associação
+- `delete(livroId, categoriaId)`: Remove associação específica
+- `deleteById(id)`: Remove por ID da associação
+- `getByLivro(livroId)`: Categorias de um livro
+- `getByCategoria(categoriaId)`: Livros de uma categoria
+- `deleteAllByLivro(livroId)`: Remove todas as categorias de um livro
+- `deleteAllByCategoria(categoriaId)`: Remove todos os livros de uma categoria
+
+### Validações Implementadas:
+- IDs obrigatórios para livro e categoria
+- Verificação de duplicidade (evita associações repetidas)
+- Métodos para limpeza em cascata
+
+---
+
+## Características Gerais da Implementação
+
+### Padrões Utilizados:
+- **Active Record Pattern**: Cada model encapsula dados e comportamentos
+- **Repository Pattern**: Separação entre lógica de negócio e acesso a dados
+- **Factory Pattern**: Construtores que criam instâncias a partir de dados brutos
+
+### Funcionalidades Transversais:
+- **Validação de Dados**: Cada model implementa suas próprias regras de negócio
+- **Sanitização**: Limpeza automática de strings (`trim`)
+- **Conversão de Tipos**: Garantia de tipos corretos para números
+- **Serialização Customizada**: Método `toJSON()` com campos calculados
+- **Tratamento de Erros**: Mensagens descritivas para validações
+
+### Relacionamentos:
+- `Autor → Livros` (1:N)
+- `Livro → Categorias` (N:M via `livroCategoriaModel`)
+- `Categoria → Livros` (N:M via `livroCategoriaModel`)
+
+### Campos Calculados:
 
 ### 3.2. Arquitetura (Semana 5)
 
@@ -97,7 +252,8 @@ Este é o meu modelo.
 
 ### 3.6. WebAPI e endpoints (Semana 05)
 
-*Utilize um link para outra página de documentação contendo a descrição completa de cada endpoint. Ou descreva aqui cada endpoint criado para seu sistema.*  
+<a href="wad2.md">Abrir especificações endpoints</a>
+
 
 ### 3.7 Interface e Navegação (Semana 07)
 
