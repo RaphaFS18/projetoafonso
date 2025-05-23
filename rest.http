@@ -140,11 +140,11 @@ Content-Type: application/json
 
 {
   "titulo": "Dom Casmurro",
-  "isbn": "978-85-260-1234-5",
   "ano_publicacao": 1899,
-  "autor_id": 1
+  "paginas": 300,
+  "isbn": "978-85-260-1234-5",
+  "autor_id": 3
 }
-
 ###
 
 # Atualizar livro
