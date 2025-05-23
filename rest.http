@@ -1,124 +1,328 @@
-# API REST Tests
+# API REST Tests - Sistema de Biblioteca
 # Arquivo para testar todas as rotas da aplicação
 
-### ROTAS DE USUÁRIOS (API) ###
+### VARIÁVEIS ###
+@baseUrl = http://localhost:3000/api
 
-# Teste da rota GET /api/users (obter todos os usuários)
-GET http://localhost:3000/api/users
+### ROTAS DE AUTORES ###
+
+# Listar todos os autores
+GET {{baseUrl}}/autores
 Accept: application/json
 
 ###
 
-# Teste da rota GET /api/users/:id (obter usuário por ID)
-GET http://localhost:3000/api/users/39602f41-b43e-4fa8-b7f7-34c7a516740b
+# Buscar autor por ID (substitua pelo ID real do seu banco)
+GET {{baseUrl}}/autores/1
 Accept: application/json
 
 ###
 
-# Teste da rota POST /api/users (criar novo usuário)
-POST http://localhost:3000/api/users
+# Criar novo autor
+POST {{baseUrl}}/autores
 Content-Type: application/json
 
 {
-  "name": "John Doe",
-  "email": "john@example.com"
+  "nome": "jorge de Assis",
+  "nacionalidade": "Espanhol",
+  "data_nascimento": "1839-06-21"
 }
 
 ###
 
-# Teste da rota PUT /api/users/:id (atualizar usuário)
-PUT http://localhost:3000/api/users/39602f41-b43e-4fa8-b7f7-34c7a516740b
+# Atualizar autor (substitua pelo ID real)
+PUT {{baseUrl}}/autores/1
 Content-Type: application/json
 
 {
-  "name": "Jane Doe Updated",
-  "email": "jane.updated@example.com"
+  "nome": "Machado de jorge Assis",
+  "nacionalidade": "USA",
+  "data_nascimento": "1839-06-21"
 }
 
 ###
 
-# Teste da rota DELETE /api/users/:id (deletar usuário)
-DELETE http://localhost:3000/api/users/39602f41-b43e-4fa8-b7f7-34c7a516740b
+# Deletar autor (substitua pelo ID real)
+DELETE {{baseUrl}}/autores/1
 Accept: application/json
 
 ###
 
-### ROTAS FRONT-END ###
-
-# Teste da rota GET / (página inicial)
-GET http://localhost:3000/
-Accept: text/html
+# Buscar autores por nacionalidade
+GET {{baseUrl}}/autores/nacionalidade?nacionalidade=Brasileiro
+Accept: application/json
 
 ###
 
-# Teste da rota GET /about (página sobre)
-GET http://localhost:3000/about
-Accept: text/html
+# Buscar autores com seus livros
+GET {{baseUrl}}/autores/com-livros
+Accept: application/json
+
+###
+
+### ROTAS DE CATEGORIAS ###
+
+# Listar todas as categorias
+GET {{baseUrl}}/categorias
+Accept: application/json
+
+###
+
+# Buscar categoria por ID
+GET {{baseUrl}}/categorias/1
+Accept: application/json
+
+###
+
+# Criar nova categoria
+POST {{baseUrl}}/categorias
+Content-Type: application/json
+
+{
+  "nome": "Aventura",
+  "descricao": "Livros de romance e ficção"
+}
+
+###
+
+# Atualizar categoria
+PUT {{baseUrl}}/categorias/1
+Content-Type: application/json
+
+{
+  "nome": "Romance Clássico",
+  "descricao": "Livros de romance clássico da literatura"
+}
+
+###
+
+# Deletar categoria
+DELETE {{baseUrl}}/categorias/1
+Accept: application/json
+
+###
+
+# Buscar categoria por nome
+GET {{baseUrl}}/categorias/buscar?nome=Romance
+Accept: application/json
+
+###
+
+# Buscar categorias com seus livros
+GET {{baseUrl}}/categorias/com-livros
+Accept: application/json
+
+###
+
+# Buscar livros por categoria
+GET {{baseUrl}}/categorias/1/livros
+Accept: application/json
+
+###
+
+### ROTAS DE LIVROS ###
+
+# Listar todos os livros
+GET {{baseUrl}}/livros
+Accept: application/json
+
+###
+
+# Buscar livro por ID
+GET {{baseUrl}}/livros/2
+Accept: application/json
+
+###
+
+# Criar novo livro
+POST {{baseUrl}}/livros
+Content-Type: application/json
+
+{
+  "titulo": "Dom Casmurro",
+  "isbn": "978-85-260-1234-5",
+  "ano_publicacao": 1899,
+  "autor_id": 1
+}
+
+###
+
+# Atualizar livro
+PUT {{baseUrl}}/livros/1
+Content-Type: application/json
+
+{
+  "titulo": "Dom Casmurro - Edição Revisada",
+  "isbn": "978-85-260-1234-5",
+  "ano_publicacao": 1899,
+  "autor_id": 1
+}
+
+###
+
+# Deletar livro
+DELETE {{baseUrl}}/livros/1
+Accept: application/json
+
+###
+
+# Buscar livros por ano
+GET {{baseUrl}}/livros/ano?ano=1899
+Accept: application/json
+
+###
+
+# Buscar livro por ISBN
+GET {{baseUrl}}/livros/isbn?isbn=978-85-260-1234-5
+Accept: application/json
+
+###
+
+# Buscar livros por autor
+GET {{baseUrl}}/livros/autor/1
+Accept: application/json
+
+###
+
+# Buscar livro com suas categorias
+GET {{baseUrl}}/livros/1/categorias
+Accept: application/json
+
+###
+
+### ROTAS DE ASSOCIAÇÕES LIVRO-CATEGORIA ###
+
+# Listar todas as associações
+GET {{baseUrl}}/livro-categoria
+Accept: application/json
+
+###
+
+# Buscar associação por ID
+GET {{baseUrl}}/livro-categoria/1
+Accept: application/json
+
+###
+
+# Associar livro a categoria
+POST {{baseUrl}}/livro-categoria/associar
+Content-Type: application/json
+
+{
+  "livro_id": 1,
+  "categoria_id": 1
+}
+
+###
+
+# Remover associação específica
+DELETE {{baseUrl}}/livro-categoria/remover
+Content-Type: application/json
+
+{
+  "livro_id": 1,
+  "categoria_id": 1
+}
+
+###
+
+# Buscar categorias de um livro
+GET {{baseUrl}}/livro-categoria/livro/1/categorias
+Accept: application/json
+
+###
+
+# Buscar livros de uma categoria
+GET {{baseUrl}}/livro-categoria/categoria/1/livros
+Accept: application/json
+
+###
+
+# Remover todas as categorias de um livro
+DELETE {{baseUrl}}/livro-categoria/livro/1/todas-categorias
+Accept: application/json
+
+###
+
+# Remover todos os livros de uma categoria
+DELETE {{baseUrl}}/livro-categoria/categoria/1/todos-livros
+Accept: application/json
+
+###
+
+# Deletar associação por ID
+DELETE {{baseUrl}}/livro-categoria/1
+Accept: application/json
 
 ###
 
 ### TESTES DE ERRO ###
 
-# Teste com ID inválido (deve retornar erro 400 ou 404)
-GET http://localhost:3000/api/users/invalid-id
+# Teste com ID inválido
+GET {{baseUrl}}/autores/999999
 Accept: application/json
 
 ###
 
-# Teste POST com dados inválidos (sem name)
-POST http://localhost:3000/api/users
+# Teste POST com dados inválidos (sem nome do autor)
+POST {{baseUrl}}/autores
 Content-Type: application/json
 
 {
-  "email": "test@example.com"
+  "nacionalidade": "Brasileiro"
 }
 
 ###
 
-# Teste POST com dados inválidos (sem email)
-POST http://localhost:3000/api/users
+# Teste POST livro sem autor_id
+POST {{baseUrl}}/livros
 Content-Type: application/json
 
 {
-  "name": "Test User"
+  "titulo": "Livro Sem Autor",
+  "isbn": "123-456-789"
 }
 
 ###
 
-# Teste POST com email inválido
-POST http://localhost:3000/api/users
-Content-Type: application/json
-
-{
-  "name": "Test User",
-  "email": "invalid-email"
-}
-
-###
-
-### TESTES ADICIONAIS ###
-
-# Teste de rota inexistente (deve retornar 404)
-GET http://localhost:3000/api/nonexistent
+# Teste de rota inexistente
+GET {{baseUrl}}/inexistente
 Accept: application/json
 
 ###
 
 # Teste de método não permitido
-PATCH http://localhost:3000/api/users
+PATCH {{baseUrl}}/autores
 Content-Type: application/json
 
 {
-  "name": "Test"
+  "nome": "Teste"
 }
 
 ###
 
-### VARIÁVEIS PARA TESTES DINÂMICOS ###
-# Você pode definir variáveis no início do arquivo se necessário:
-# @baseUrl = http://localhost:3000
-# @userId = 39602f41-b43e-4fa8-b7f7-34c7a516740b
+### TESTES ESPECÍFICOS DE QUERY PARAMETERS ###
 
-# Exemplo usando variáveis:
-# GET {{baseUrl}}/api/users/{{userId}}
-# Accept: application/json
+# Teste busca por nacionalidade sem parâmetro
+GET {{baseUrl}}/autores/nacionalidade
+Accept: application/json
+
+###
+
+# Teste busca por ano sem parâmetro
+GET {{baseUrl}}/livros/ano
+Accept: application/json
+
+###
+
+# Teste busca por ISBN sem parâmetro
+GET {{baseUrl}}/livros/isbn
+Accept: application/json
+
+###
+
+# Teste busca categoria por nome sem parâmetro
+GET {{baseUrl}}/categorias/buscar
+Accept: application/json
+
+###
