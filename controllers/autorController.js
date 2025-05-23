@@ -1,40 +1,93 @@
+// controllers/autorController.js
 const AutorService = require('../services/autorService');
 
 class AutorController {
-  static getAll(req, res) {
-    AutorService.getAllAutores((err, rows) => {
-      if (err) return res.status(500).json({ error: err.message });
-      res.json(rows);
-    });
+  static async getAll(req, res) {
+    try {
+      const autores = await AutorService.getAllAutores();
+      res.json(autores);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
   }
 
-  static getById(req, res) {
-    AutorService.getAutorById(req.params.id, (err, row) => {
-      if (err) return res.status(500).json({ error: err.message });
-      if (!row) return res.status(404).json({ error: 'Autor não encontrado' });
-      res.json(row);
-    });
+  static async getById(req, res) {
+    try {
+      const autor = await AutorService.getAutorById(req.params.id);
+      res.json(autor);
+    } catch (error) {
+      if (error.message.includes('não encontrado')) {
+        res.status(404).json({ error: error.message });
+      } else {
+        res.status(500).json({ error: error.message });
+      }
+    }
   }
 
-  static create(req, res) {
-    AutorService.createAutor(req.body, (err, newAutor) => {
-      if (err) return res.status(500).json({ error: err.message });
-      res.status(201).json(newAutor);
-    });
+  static async create(req, res) {
+    try {
+      const novoAutor = await AutorService.createAutor(req.body);
+      res.status(201).json(novoAutor);
+    } catch (error) {
+      if (error.message.includes('obrigatório') || 
+          error.message.includes('caracteres')) {
+        res.status(400).json({ error: error.message });
+      } else {
+        res.status(500).json({ error: error.message });
+      }
+    }
   }
 
-  static update(req, res) {
-    AutorService.updateAutor(req.params.id, req.body, (err) => {
-      if (err) return res.status(500).json({ error: err.message });
-      res.json({ message: 'Autor atualizado com sucesso' });
-    });
+  static async update(req, res) {
+    try {
+      const autorAtualizado = await AutorService.updateAutor(req.params.id, req.body);
+      res.json(autorAtualizado);
+    } catch (error) {
+      if (error.message.includes('não encontrado')) {
+        res.status(404).json({ error: error.message });
+      } else if (error.message.includes('obrigatório') || 
+                 error.message.includes('caracteres')) {
+        res.status(400).json({ error: error.message });
+      } else {
+        res.status(500).json({ error: error.message });
+      }
+    }
   }
 
-  static delete(req, res) {
-    AutorService.deleteAutor(req.params.id, (err) => {
-      if (err) return res.status(500).json({ error: err.message });
-      res.json({ message: 'Autor excluído com sucesso' });
-    });
+  static async delete(req, res) {
+    try {
+      const resultado = await AutorService.deleteAutor(req.params.id);
+      res.json(resultado);
+    } catch (error) {
+      if (error.message.includes('não encontrado')) {
+        res.status(404).json({ error: error.message });
+      } else {
+        res.status(500).json({ error: error.message });
+      }
+    }
+  }
+
+  static async getByNacionalidade(req, res) {
+    try {
+      const { nacionalidade } = req.query;
+      const autores = await AutorService.getAutoresByNacionalidade(nacionalidade);
+      res.json(autores);
+    } catch (error) {
+      if (error.message.includes('obrigatória')) {
+        res.status(400).json({ error: error.message });
+      } else {
+        res.status(500).json({ error: error.message });
+      }
+    }
+  }
+
+  static async getAutoresComLivros(req, res) {
+    try {
+      const autores = await AutorService.getAutoresComLivros();
+      res.json(autores);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
   }
 }
 

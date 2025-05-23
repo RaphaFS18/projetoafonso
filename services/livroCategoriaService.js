@@ -1,10 +1,10 @@
 // services/livroCategoriaService.js
-const livroCategoriaRepository = require('../repositories/livrocategoriaRepository');
+const LivroCategoria = require('../models/livroCategoriaModel');
 
 class LivroCategoriaService {
   static async getAllLivroCategorias() {
     try {
-      return await livroCategoriaRepository.findAll();
+      return await LivroCategoria.getAll();
     } catch (error) {
       throw new Error(`Erro ao buscar relacionamentos livro-categoria: ${error.message}`);
     }
@@ -16,7 +16,7 @@ class LivroCategoriaService {
         throw new Error('ID é obrigatório');
       }
       
-      const relacao = await livroCategoriaRepository.findById(id);
+      const relacao = await LivroCategoria.getById(id);
       if (!relacao) {
         throw new Error('Relacionamento não encontrado');
       }
@@ -33,13 +33,7 @@ class LivroCategoriaService {
         throw new Error('ID do livro e ID da categoria são obrigatórios');
       }
 
-      // Verificar se a associação já existe
-      const jaExiste = await livroCategoriaRepository.exists(livroId, categoriaId);
-      if (jaExiste) {
-        throw new Error('Esta associação já existe');
-      }
-      
-      return await livroCategoriaRepository.create(livroId, categoriaId);
+      return await LivroCategoria.create(livroId, categoriaId);
     } catch (error) {
       throw new Error(`Erro ao associar livro à categoria: ${error.message}`);
     }
@@ -51,7 +45,7 @@ class LivroCategoriaService {
         throw new Error('ID do livro e ID da categoria são obrigatórios');
       }
       
-      const deleted = await livroCategoriaRepository.delete(livroId, categoriaId);
+      const deleted = await LivroCategoria.delete(livroId, categoriaId);
       if (!deleted) {
         throw new Error('Associação não encontrada para remoção');
       }
@@ -68,7 +62,7 @@ class LivroCategoriaService {
         throw new Error('ID é obrigatório');
       }
       
-      const deleted = await livroCategoriaRepository.deleteById(id);
+      const deleted = await LivroCategoria.deleteById(id);
       if (!deleted) {
         throw new Error('Associação não encontrada para remoção');
       }
@@ -85,7 +79,7 @@ class LivroCategoriaService {
         throw new Error('ID do livro é obrigatório');
       }
       
-      return await livroCategoriaRepository.findByLivro(livroId);
+      return await LivroCategoria.getByLivro(livroId);
     } catch (error) {
       throw new Error(`Erro ao buscar categorias do livro: ${error.message}`);
     }
@@ -97,7 +91,7 @@ class LivroCategoriaService {
         throw new Error('ID da categoria é obrigatório');
       }
       
-      return await livroCategoriaRepository.findByCategoria(categoriaId);
+      return await LivroCategoria.getByCategoria(categoriaId);
     } catch (error) {
       throw new Error(`Erro ao buscar livros da categoria: ${error.message}`);
     }
@@ -109,7 +103,7 @@ class LivroCategoriaService {
         throw new Error('ID do livro é obrigatório');
       }
       
-      const removidos = await livroCategoriaRepository.deleteAllByLivro(livroId);
+      const removidos = await LivroCategoria.deleteAllByLivro(livroId);
       return { 
         message: `${removidos} categorias removidas do livro`,
         removidos: removidos
@@ -125,7 +119,7 @@ class LivroCategoriaService {
         throw new Error('ID da categoria é obrigatório');
       }
       
-      const removidos = await livroCategoriaRepository.deleteAllByCategoria(categoriaId);
+      const removidos = await LivroCategoria.deleteAllByCategoria(categoriaId);
       return { 
         message: `${removidos} livros removidos da categoria`,
         removidos: removidos
