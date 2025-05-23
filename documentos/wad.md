@@ -18,9 +18,16 @@
 
 ## <a name="c1"></a>1. Introdução (Semana 01)
 
-Esta aplicação é um gerenciador de tarefas criado para ajudar pessoas a se organizarem melhor no dia a dia. Com ela, é possível anotar tarefas importantes, visualizar tudo o que precisa ser feito, marcar o que já foi concluído e remover tarefas que não são mais necessárias.
+Este projeto tem como objetivo o desenvolvimento de uma aplicação baseada na arquitetura MVC utilizando **Node.js** e **SQLite**, com foco na criação e gestão de um banco de dados relacional para armazenar informações sobre livros, autores e categorias literárias.
 
-A ideia é oferecer uma ferramenta simples, rápida e fácil de usar, que funcione como um lembrete digital. O objetivo é facilitar a rotina de estudos, trabalho ou afazeres pessoais, permitindo que o usuário tenha mais controle sobre suas atividades.
+Para isso, foram definidas quatro tabelas principais:
+
+- **autor**: Armazena dados sobre os autores, como `nome`, `nacionalidade` e `data_nascimento`;
+- **livro**: Contém informações bibliográficas dos livros, incluindo `titulo`, `ano_publicacao`, `paginas` e `isbn`. Cada livro está obrigatoriamente associado a um autor por meio da chave estrangeira `autor_id`;
+- **categoria**: Representa as categorias literárias, com os campos `nome` e `descricao`;
+- **livro_categorias**: Tabela intermediária que implementa a relação muitos-para-muitos entre livros e categorias, referenciando os IDs das tabelas `livro` e `categoria`.
+
+A estrutura do banco de dados foi cuidadosamente modelada para garantir a integridade referencial por meio de chaves estrangeiras, assegurando a consistência das relações entre as entidades. Esta primeira etapa marca o início do projeto, com foco na **modelagem de dados** e na construção da base estrutural que dará suporte às funcionalidades da aplicação.
 
 ---
 
