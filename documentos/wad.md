@@ -35,28 +35,89 @@ A estrutura do banco de dados foi cuidadosamente modelada para garantir a integr
 
 ### 2.1. Personas (Semana 01)
 
-    Persona 1 – Ana, a Estudante Organizada
-Nome: Ana Souza
-Idade: 21 anos
-Profissão: Estudante de Engenharia
-Objetivo: Manter o controle de suas tarefas da faculdade, como trabalhos, provas e reuniões de grupo.
-Necessidades: Um sistema prático para cadastrar, visualizar e marcar tarefas como concluídas.
-Desafios: Esquecer prazos e perder tempo procurando o que precisa ser feito.
-Dispositivo mais usado: Notebook pessoal e celular.
-    Persona 2 – Carlos, o Profissional Atarefado
-Nome: Carlos Lima
-Idade: 35 anos
-Profissão: Analista de Sistemas
-Objetivo: Organizar pequenas tarefas diárias que surgem no trabalho.
-Necessidades: Rápido acesso para adicionar e remover tarefas durante o expediente.
-Desafios: Acúmulo de atividades sem acompanhamento adequado.
-Dispositivo mais usado: Computador do trabalho.
+### Nome: Júlia Fernandes
+
+
+Idade: 42 anos
+
+
+Profissão: Bibliotecária em uma universidade pública
+
+
+### Objetivo:
+
+ Organizar o acervo da biblioteca universitária de forma digital e acessível.
+
+
+### Necessidades:
+-Cadastrar livros novos com facilidade.
+
+
+-Consultar autores por nacionalidade ou data de nascimento.
+
+
+-Associar livros a múltiplas categorias para facilitar a busca dos alunos.
+
+
+### Desafios:
+
+-Sistemas antigos são lentos e difíceis de usar.
+
+-Evitar cadastros duplicados ou erros de digitação.
+
+-Dispositivos mais usados: Computador da biblioteca e tablet.
+
+### Persona 2 – Marcelo, o Pesquisador Literário
+
+### Nome: Marcelo Azevedo
+
+Idade: 30 anos
+
+Profissão: Doutorando em Literatura Brasileira
+
+### Objetivo: 
+-Analisar autores e suas obras por época, nacionalidade e temas.
+
+### Necessidades:
+
+-Buscar livros por autor, ano de publicação ou categoria.
+
+-Ver rapidamente quais livros um autor escreveu.
+
+-Obter dados organizados e confiáveis para exportar em suas pesquisas.
+
+### Desafios:
+
+Sites com poucas opções de filtro.
+
+Dificuldade em encontrar informações completas e atualizadas.
+
+Dispositivos mais usados: Notebook pessoal e celular.
 
 
 ### 2.2. User Stories (Semana 01)
 
-US01	Como usuário, quero cadastrar uma nova tarefa para lembrar do que preciso fazer e ver uma lista com todas as tarefas.
-US02	Como usuário, quero marcar uma tarefa como concluída para saber que já a finalizei.
+### User Story 1
+
+ – Cadastro e Organização de Livros (Júlia, a Bibliotecária)
+
+ID: US01
+
+Como bibliotecária,
+quero cadastrar livros com título, autor, ano de publicação e categorias,
+para que o acervo da biblioteca fique organizado e fácil de consultar pelos alunos.
+
+### User Story 2 
+
+– Consulta de Obras por Autor (Marcelo, o Pesquisador)
+
+ID: US02
+
+Como pesquisador literário,
+quero visualizar todos os livros de um autor específico,
+para que eu possa analisar sua produção ao longo do tempo.
+
+
 
 ## <a name="c3"></a>3. Projeto da Aplicação Web
 
