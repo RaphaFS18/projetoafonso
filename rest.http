@@ -16,6 +16,7 @@ Accept: application/json
 GET {{baseUrl}}/autores/1
 Accept: application/json
 
+
 ###
 
 # Criar novo autor
@@ -23,9 +24,9 @@ POST {{baseUrl}}/autores
 Content-Type: application/json
 
 {
-  "nome": "jorge de Assis",
-  "nacionalidade": "Espanhol",
-  "data_nascimento": "1839-06-21"
+  "nome": "Raphita",
+  "nacionalidade": "Brasileir",
+  "data_nascimento": "2009-06-21"
 }
 
 ###
@@ -79,7 +80,7 @@ POST {{baseUrl}}/categorias
 Content-Type: application/json
 
 {
-  "nome": "Aventura",
+  "nome": "guygtt",
   "descricao": "Livros de romance e ficção"
 }
 

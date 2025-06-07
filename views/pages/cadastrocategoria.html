@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Biblioteca - Nova Categoria</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #16a34a 0%, #16a34a 100%);
+            min-height: 100vh;
+            color: #16a34a;
+        }
+
+        .navbar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .navbar .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #16a34a;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #16a34a;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .nav-links a:hover, .nav-links a.active {
+            background: #16a34a;
+            color: white;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 2rem;
+            color: white;
+        }
+
+        .header h1 {
+            font-size: 2.2rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            font-weight: 300;
+        }
+
+        .breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 2rem;
+            font-size: 0.9rem;
+            font-weight: 400;
+        }
+
+        .breadcrumb a {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .breadcrumb a:hover {
+            color: white;
+        }
+
+        .form-container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 2.5rem;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .form-section {
+            margin-bottom: 2rem;
+        }
+
+        .form-section:last-child {
+            margin-bottom: 0;
+        }
+
+        .section-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #16a34a;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            font-weight: 500;
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+
+        .required {
+            color: #e53e3e;
+        }
+
+        input, textarea, select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #e1e5e9;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-family: 'Poppins', sans-serif;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: #16a34a;
+            box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.1);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        .input-group {
+            position: relative;
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 0.75rem;
+            top: 0.75rem;
+            color: #16a34a;
+            z-index: 1;
+        }
+
+        .input-group input {
+            padding-left: 2.5rem;
+        }
+
+        .input-group textarea {
+            padding-left: 2.5rem;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid #e1e5e9;
+        }
+
+        .btn {
+            padding: 0.75rem 2rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 500;
+            font-family: 'Poppins', sans-serif;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+        }
+
+        .btn-primary {
+            background: #16a34a;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #16a34a;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(22, 163, 74, 0.3);
+        }
+
+        .btn-secondary {
+            background: #4b5563;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #4b5563;
+            transform: translateY(-2px);
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: #16a34a;
+            border: 2px solid #16a34a;
+        }
+
+        .btn-outline:hover {
+            background: #16a34a;
+            color: white;
+        }
+
+        .error-message {
+            color: #e53e3e;
+            font-size: 0.875rem;
+            margin-top: 0.25rem;
+            display: none;
+        }
+
+        .success-message {
+            background: #c6f6d5;
+            color: #22543d;
+            padding: 1rem;
+            border-radius: 8px;
+            border: 1px solid #9ae6b4;
+            margin-bottom: 1.5rem;
+            display: none;
+        }
+
+        .loading {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .loading-content {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .loading i {
+            font-size: 2rem;
+            color: #16a34a;
+            animation: spin 1s linear infinite;
+            margin-bottom: 1rem;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .char-counter {
+            font-size: 0.8rem;
+            color: #718096;
+            text-align: right;
+            margin-top: 0.25rem;
+        }
+
+        .form-help {
+            font-size: 0.875rem;
+            color: #718096;
+            margin-top: 0.25rem;
+        }
+
+        .input-warning {
+            border-color: #ed8936 !important;
+        }
+
+        .warning-message {
+            color: #c05621;
+            font-size: 0.875rem;
+            margin-top: 0.25rem;
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+            
+            .form-container {
+                padding: 1.5rem;
+            }
+            
+            .form-actions {
+                flex-direction: column;
+            }
+            
+            .breadcrumb {
+                flex-wrap: wrap;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="logo">
+                <i class="fas fa-book"></i> Sistema de Biblioteca
+            </div>
+            <ul class="nav-links">
+                <li><a href="cadastrolivro.html" onclick="mostrarPagina('livros')"><i class="fas fa-book"></i> Livros</a></li>
+                <li><a href="cadastroautor.html" onclick="mostrarPagina('autores')"><i class="fas fa-user"></i> Autores</a></li>
+                <li><a href="cadastrocategoria.html" onclick="mostrarPagina('categorias')"><i class="fas fa-tags"></i> Categorias</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="breadcrumb">
+            <a href="cadastrocategoria.html"><i class="fas fa-tags"></i> Categorias</a>
+            <i class="fas fa-chevron-right"></i>
+            <span>Nova Categoria</span>
+        </div>
+
+        <div class="header">
+            <h1><i class="fas fa-plus-circle"></i> Adicionar Nova Categoria</h1>
+            <p>Preencha as informações da categoria para adicioná-la ao sistema</p>
+        </div>
+
+        <div class="form-container">
+            <div class="success-message" id="successMessage">
+                <i class="fas fa-check-circle"></i>
+                Categoria adicionada com sucesso!
+            </div>
+
+            <form id="categoriaForm">
+                <div class="form-section">
+                    <div class="section-title">
+                        <i class="fas fa-tag"></i>
+                        Informações da Categoria
+                    </div>
+
+                    <div class="form-group">
+                        <label for="nome">Nome da Categoria <span class="required">*</span></label>
+                        <div class="input-group">
+                            <i class="fas fa-tag input-icon"></i>
+                            <input type="text" id="nome" name="nome" required maxlength="50" placeholder="Ex: Ficção Científica, Romance, Terror...">
+                        </div>
+                        <div class="char-counter">
+                            <span id="nomeCounter">0</span>/50 caracteres
+                        </div>
+                        <div class="error-message" id="nomeError">Por favor, informe o nome da categoria.</div>
+                        <div class="warning-message" id="nomeWarning">Este nome de categoria já existe no sistema.</div>
+                        <div class="form-help">O nome deve ser único e ter no máximo 50 caracteres</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="descricao">Descrição</label>
+                        <div class="input-group">
+                            <i class="fas fa-align-left input-icon"></i>
+                            <textarea id="descricao" name="descricao" placeholder="Descreva brevemente esta categoria literária..."></textarea>
+                        </div>
+                        <div class="form-help">Descrição opcional da categoria</div>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <a href="inicio.html" class="btn btn-outline">
+                        <i class="fas fa-times"></i> Cancelar
+                    </a>
+                    <button type="button" onclick="resetForm()" class="btn btn-secondary">
+                        <i class="fas fa-undo"></i> Limpar
+                    </button>
+                    <button type="submit" class="btn btn-primary">
+                         <i class="fas fa-save"></i> Salvar Categoria     
+
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="loading" id="loading">
+        <div class="loading-content">
+            <i class="fas fa-spinner"></i>
+            <p>Salvando categoria...</p>
+        </div>
+    </div>
+
+    <script>
+        // Lista de categorias existentes (simulada - em produção viria da API)
+        let categoriasExistentes = [];
+
+        // Contador de caracteres
+        const nomeInput = document.getElementById('nome');
+        const nomeCounter = document.getElementById('nomeCounter');
+
+        nomeInput.addEventListener('input', function() {
+            const length = this.value.length;
+            nomeCounter.textContent = length;
+            
+            if (length >= 45) {
+                nomeCounter.style.color = '#e53e3e';
+            } else if (length >= 40) {
+                nomeCounter.style.color = '#ed8936';
+            } else {
+                nomeCounter.style.color = '#718096';
+            }
+
+            // Verificar duplicidade
+            verificarDuplicidade();
+        });
+
+        // Verificar se o nome já existe
+        function verificarDuplicidade() {
+            const nome = nomeInput.value.trim().toLowerCase();
+            const nomeWarning = document.getElementById('nomeWarning');
+            
+            if (nome && categoriasExistentes.some(cat => cat.toLowerCase() === nome)) {
+                nomeWarning.style.display = 'block';
+                nomeInput.classList.add('input-warning');
+                return false;
+            } else {
+                nomeWarning.style.display = 'none';
+                nomeInput.classList.remove('input-warning');
+                return true;
+            }
+        }
+
+        // Carregar categorias existentes
+        async function carregarCategoriasExistentes() {
+            try {
+                const response = await fetch('/api/categorias');
+                if (response.ok) {
+                    const categorias = await response.json();
+                    categoriasExistentes = categorias.map(cat => cat.nome);
+                }
+            } catch (error) {
+                console.error('Erro ao carregar categorias:', error);
+            }
+        }
+
+        // Validação do formulário
+        function validarFormulario() {
+            let isValid = true;
+            const nome = document.getElementById('nome');
+            const nomeError = document.getElementById('nomeError');
+
+            // Reset errors
+            nomeError.style.display = 'none';
+            nome.style.borderColor = '#e1e5e9';
+
+            // Validar nome
+            if (!nome.value.trim()) {
+                nomeError.textContent = 'Por favor, informe o nome da categoria.';
+                nomeError.style.display = 'block';
+                nome.style.borderColor = '#e53e3e';
+                nome.focus();
+                isValid = false;
+            } else if (nome.value.trim().length > 50) {
+                nomeError.textContent = 'O nome deve ter no máximo 50 caracteres.';
+                nomeError.style.display = 'block';
+                nome.style.borderColor = '#e53e3e';
+                nome.focus();
+                isValid = false;
+            } else if (!verificarDuplicidade()) {
+                nomeError.textContent = 'Este nome de categoria já existe no sistema.';
+                nomeError.style.display = 'block';
+                nome.style.borderColor = '#e53e3e';
+                nome.focus();
+                isValid = false;
+            }
+
+            return isValid;
+        }
+
+        // Submissão do formulário
+        document.getElementById('categoriaForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            if (!validarFormulario()) {
+                return;
+            }
+
+            const loading = document.getElementById('loading');
+            const successMessage = document.getElementById('successMessage');
+
+            loading.style.display = 'flex';
+
+            try {
+                const categoriaData = {
+                    nome: document.getElementById('nome').value.trim(),
+                    descricao: document.getElementById('descricao').value.trim() || null
+                };
+
+                const response = await fetch('/api/categorias', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(categoriaData)
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.message || 'Erro ao salvar categoria');
+                }
+
+                const result = await response.json();
+
+                // Mostrar mensagem de sucesso
+                successMessage.style.display = 'block';
+                
+                // Resetar formulário após 2 segundos e redirecionar
+                setTimeout(() => {
+                    window.location.href = 'cadastrocategoria.html';
+                }, 2000);
+
+            } catch (error) {
+                console.error('Erro ao salvar categoria:', error);
+                
+                if (error.message.includes('já existe')) {
+                    document.getElementById('nomeError').textContent = 'Este nome de categoria já existe no sistema.';
+                    document.getElementById('nomeError').style.display = 'block';
+                    document.getElementById('nome').style.borderColor = '#e53e3e';
+                    document.getElementById('nome').focus();
+                } else {
+                    alert('Erro ao salvar categoria. Tente novamente.');
+                }
+            } finally {
+                loading.style.display = 'none';
+            }
+        });
+
+        // Função para limpar o formulário
+        function resetForm() {
+            if (confirm('Tem certeza que deseja limpar todos os campos?')) {
+                document.getElementById('categoriaForm').reset();
+                
+                // Reset errors e warnings
+                document.getElementById('nomeError').style.display = 'none';
+                document.getElementById('nomeWarning').style.display = 'none';
+                document.getElementById('nome').style.borderColor = '#e1e5e9';
+                document.getElementById('nome').classList.remove('input-warning');
+                
+                // Reset contador
+                document.getElementById('nomeCounter').textContent = '0';
+                document.getElementById('nomeCounter').style.color = '#718096';
+            }
+        }
+
+        // Inicializar quando a página carrega
+        document.addEventListener('DOMContentLoaded', function() {
+            carregarCategoriasExistentes();
+        });
+
+    </script>
+</body>
+</html>

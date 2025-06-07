@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Biblioteca - Livros</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #16a34a 0%, #16a34a 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .navbar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .navbar .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #16a34a;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #16a34a;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .nav-links a:hover {
+            background: #16a34a;
+            color: white;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+            color: white;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: #16a34a;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #5a6fd8;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .search-filters {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .search-input {
+            padding: 0.75rem;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            min-width: 250px;
+        }
+
+        .search-input::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .search-input option {
+            background: #16a34a;
+            color: white;
+        }
+
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 2rem;
+        }
+
+        .book-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 1.5rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .book-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+        }
+
+        .book-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+
+        .book-title {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #16a34a;
+            margin-bottom: 0.5rem;
+            line-height: 1.4;
+        }
+
+        .book-author {
+            color: #667eea;
+            font-weight: 500;
+            font-size: 1rem;
+        }
+
+        .book-info {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            margin: 1rem 0;
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .book-info-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .book-categories {
+            margin: 1rem 0;
+        }
+
+        .categories-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .category-tag {
+            background: linear-gradient(135deg, #16a34a, #16a34a);
+            color: white;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .book-actions {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .btn-small {
+            padding: 0.5rem 1rem;
+            font-size: 0.9rem;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            transition: all 0.3s ease;
+        }
+
+        .btn-edit {
+            background: #28a745;
+            color: white;
+        }
+
+        .btn-edit:hover {
+            background: #218838;
+        }
+
+        .btn-delete {
+            background: #dc3545;
+            color: white;
+        }
+
+        .btn-delete:hover {
+            background: #c82333;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: white;
+        }
+
+        .empty-state i {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            opacity: 0.7;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            color: white;
+        }
+
+        .loading i {
+            font-size: 2rem;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .stats {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 1rem 2rem;
+            border-radius: 10px;
+            text-align: center;
+            color: white;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            color: white;
+            font-weight: 500;
+            z-index: 1000;
+            opacity: 0;
+            transform: translateX(100%);
+            transition: all 0.3s ease;
+        }
+
+        .notification.show {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .notification.success {
+            background: #28a745;
+        }
+
+        .notification.error {
+            background: #dc3545;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+            
+            .actions {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .search-filters {
+                flex-direction: column;
+            }
+            
+            .search-input {
+                min-width: auto;
+            }
+            
+            .cards-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats {
+                flex-direction: column;
+                gap: 1rem;
+            }
+        }
+    </style>
+</head>
+<ul id="lista-categorias"></ul>
+
+<script type="module">
+  import { createClient } from 'https://esm.sh/@supabase/supabase-js';
+
+  const supabaseUrl = 'https://nacvjiwvlnxnjmgfxajq.supabase.co';
+  const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5hY3ZqaXd2bG54bmptZ2Z4YWpxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDY0NzQ0ODQsImV4cCI6MjA2MjA1MDQ4NH0.-L7-ENRpmNFILmHq62Skxeg7sltW_BH8_-smyyPR6lk';
+  const supabase = createClient(supabaseUrl, supabaseKey);
+
+  async function carregarCategorias() {
+    const { data, error } = await supabase.from('categorias').select('*');
+    if (error) {
+      console.error('Erro ao buscar categorias:', error.message);
+      return;
+    }
+
+    const lista = document.getElementById('lista-categorias');
+    data.forEach(categoria => {
+      const li = document.createElement('li');
+      li.textContent = categoria.nome; // ou outro campo, como categoria.nome_categoria
+      lista.appendChild(li);
+    });
+  }
+
+  carregarCategorias();
+</script>
+
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="logo">
+                <i class="fas fa-book"></i> Sistema de Biblioteca
+            </div>
+            <ul class="nav-links">
+                <li><a href="cadastrolivro.html" onclick="mostrarPagina('livros')"><i class="fas fa-book"></i> Livros</a></li>
+                <li><a href="cadastroautor.html" onclick="mostrarPagina('autores')"><i class="fas fa-user"></i> Autores</a></li>
+                <li><a href="cadastrocategoria.html" onclick="mostrarPagina('categorias')"><i class="fas fa-tags"></i> Categorias</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="header">
+            <h1>Gerenciamento de Livros</h1>
+            <p>Organize e consulte o acervo da biblioteca</p>
+        </div>
+
+        <div class="stats" id="stats">
+            <div class="stat-card">
+                <div class="stat-number" id="totalLivros">0</div>
+                <div class="stat-label">Livros</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="totalAutores">0</div>
+                <div class="stat-label">Autores</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="totalCategorias">0</div>
+                <div class="stat-label">Categorias</div>
+            </div>
+        </div>
+
+        
+            <div class="search-filters">
+                <input type="text" class="search-input" placeholder="Buscar por título ou autor..." id="searchInput">
+                <select class="search-input" id="autorFilter">
+                    <option value="">Todos os Autores</option>
+                </select>
+                <select class="search-input" id="categoriaFilter">
+                    <option value="">Todas as Categorias</option>
+                </select>
+            </div>
+        </div>
+
+        <div id="loading" class="loading" style="display: none;">
+            <i class="fas fa-spinner"></i>
+            <p>Carregando livros...</p>
+        </div>
+
+        <div id="livrosContainer" class="cards-grid">
+            <!-- Livros serão carregados aqui via JavaScript -->
+        </div>
+
+        <div id="emptyState" class="empty-state" style="display: none;">
+            <i class="fas fa-book-open"></i>
+        
+        
+         
+    
+
+    <script>
+        // Arrays vazios para serem preenchidos pelo usuário
+        let livros = [];
+        let autores = [];
+        let categorias = [];
+
+        // Carregar dados iniciais
+        function carregarDados() {
+            const loading = document.getElementById('loading');
+            loading.style.display = 'block';
+
+            // Simular carregamento rápido
+            setTimeout(() => {
+                try {
+                    atualizarEstatisticas();
+                    preencherFiltros();
+                    renderizarLivros(livros);
+                    // Remove a notificação de sucesso já que não há dados para carregar
+                } catch (error) {
+                    console.error('Erro ao inicializar:', error);
+                    mostrarNotificacao('Erro ao inicializar sistema.', 'error');
+                } finally {
+                    loading.style.display = 'none';
+                }
+            }, 500);
+        }
+
+        function atualizarEstatisticas() {
+            document.getElementById('totalLivros').textContent = livros.length;
+            document.getElementById('totalAutores').textContent = autores.length;
+            document.getElementById('totalCategorias').textContent = categorias.length;
+        }
+
+        function preencherFiltros() {
+            const autorFilter = document.getElementById('autorFilter');
+            const categoriaFilter = document.getElementById('categoriaFilter');
+
+            // Limpar filtros
+            autorFilter.innerHTML = '<option value="">Todos os Autores</option>';
+            categoriaFilter.innerHTML = '<option value="">Todas as Categorias</option>';
+
+            // Adicionar autores
+            autores.forEach(autor => {
+                const option = document.createElement('option');
+                option.value = autor.id;
+                option.textContent = autor.nome;
+                autorFilter.appendChild(option);
+            });
+
+            // Adicionar categorias
+            categorias.forEach(categoria => {
+                const option = document.createElement('option');
+                option.value = categoria.id;
+                option.textContent = categoria.nome;
+                categoriaFilter.appendChild(option);
+            });
+        }
+
+        function renderizarLivros(livrosParaRender) {
+            const container = document.getElementById('livrosContainer');
+            const emptyState = document.getElementById('emptyState');
+
+            if (livrosParaRender.length === 0) {
+                container.style.display = 'none';
+                emptyState.style.display = 'block';
+                return;
+            }
+
+            container.style.display = 'grid';
+            emptyState.style.display = 'none';
+
+            container.innerHTML = livrosParaRender.map(livro => `
+                <div class="book-card">
+                    <div class="book-header">
+                        <div>
+                            <div class="book-title">${livro.titulo}</div>
+                            <div class="book-author">por ${livro.autor_nome || 'Autor não informado'}</div>
+                        </div>
+                    </div>
+                    
+                    <div class="book-info">
+                        <div class="book-info-item">
+                            <i class="fas fa-calendar"></i>
+                            <span>Publicado em ${livro.ano_publicacao}</span>
+                        </div>
+                        <div class="book-info-item">
+                            <i class="fas fa-file-alt"></i>
+                            <span>${livro.paginas} páginas</span>
+                        </div>
+                        ${livro.isbn ? `
+                            <div class="book-info-item">
+                                <i class="fas fa-barcode"></i>
+                                <span>ISBN: ${livro.isbn}</span>
+                            </div>
+                        ` : ''}
+                    </div>
+
+                    <div class="book-categories">
+                        <div class="categories-list">
+                            ${livro.categorias.map(cat => 
+                                `<span class="category-tag">${cat}</span>`
+                            ).join('')}
+                        </div>
+                    </div>
+
+                    <div class="book-actions">
+                        <button onclick="editarLivro(${livro.id})" class="btn-small btn-edit">
+                            <i class="fas fa-edit"></i> Editar
+                        </button>
+                        <button onclick="excluirLivro(${livro.id})" class="btn-small btn-delete">
+                            <i class="fas fa-trash"></i> Excluir
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function filtrarLivros() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const autorId = document.getElementById('autorFilter').value;
+            const categoriaId = document.getElementById('categoriaFilter').value;
+
+            let livrosFiltrados = livros.filter(livro => {
+                const matchSearch = !searchTerm || 
+                    livro.titulo.toLowerCase().includes(searchTerm) ||
+                    (livro.autor_nome && livro.autor_nome.toLowerCase().includes(searchTerm));
+                
+                const matchAutor = !autorId || livro.autor_id == autorId;
+                
+                const matchCategoria = !categoriaId || 
+                    livro.categorias.some(cat => {
+                        const categoria = categorias.find(c => c.id == categoriaId);
+                        return categoria && cat.includes(categoria.nome);
+                    });
+                
+                return matchSearch && matchAutor && matchCategoria;
+            });
+
+            renderizarLivros(livrosFiltrados);
+        }
+
+        function excluirLivro(id) {
+            if (!confirm('Tem certeza que deseja excluir este livro?')) {
+                return;
+            }
+
+            try {
+                livros = livros.filter(livro => livro.id !== id);
+                atualizarEstatisticas();
+                filtrarLivros();
+                mostrarNotificacao('Livro excluído com sucesso!', 'success');
+            } catch (error) {
+                console.error('Erro ao excluir livro:', error);
+                mostrarNotificacao('Erro ao excluir livro. Tente novamente.', 'error');
+            }
+        }
+
+        function editarLivro(id) {
+            const livro = livros.find(l => l.id === id);
+            if (livro) {
+                mostrarNotificacao(`Editando: ${livro.titulo}`, 'success');
+                // Aqui você implementaria a lógica de edição
+            }
+        }
+
+        function adicionarLivro() {
+            mostrarNotificacao('Função de adicionar livro ainda não implementada', 'success');
+            // Aqui você implementaria a lógica de adição
+        }
+
+        function mostrarPagina(pagina) {
+            mostrarNotificacao(`Navegando para: ${pagina}`, 'success');
+            // Aqui você implementaria a navegação entre páginas
+        }
+
+        function mostrarNotificacao(mensagem, tipo = 'success') {
+            // Remove notificação existente
+            const existingNotification = document.querySelector('.notification');
+            if (existingNotification) {
+                existingNotification.remove();
+            }
+
+            // Cria nova notificação
+            const notification = document.createElement('div');
+            notification.className = `notification ${tipo}`;
+            notification.textContent = mensagem;
+            document.body.appendChild(notification);
+
+            // Mostra a notificação
+            setTimeout(() => {
+                notification.classList.add('show');
+            }, 100);
+
+            // Remove a notificação após 3 segundos
+            setTimeout(() => {
+                notification.classList.remove('show');
+                setTimeout(() => {
+                    notification.remove();
+                }, 300);
+            }, 3000);
+        }
+
+        // Event listeners
+        document.getElementById('searchInput').addEventListener('input', filtrarLivros);
+        document.getElementById('autorFilter').addEventListener('change', filtrarLivros);
+        document.getElementById('categoriaFilter').addEventListener('change', filtrarLivros);
+
+        // Carregar dados ao iniciar
+        document.addEventListener('DOMContentLoaded', carregarDados);
+    </script>
+</body>
+</html>
