@@ -7,10 +7,8 @@ const routes = require('./routes'); // Agora aponta para routes/index.js
 const app = express();
 const port = 3000;
 
-// Middlewares
+const cors = require('cors');
 app.use(cors());
-app.use(bodyParser.json());
-
 // Usando as rotas centralizadas
 app.use('/api', routes);
 
