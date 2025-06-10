@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistema de Biblioteca - Livros</title>
+    <title>Sistema de Biblioteca</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
         * {
@@ -58,44 +58,144 @@
             cursor: pointer;
         }
 
-        .nav-links a:hover {
+        .nav-links a:hover, .nav-links a.active {
             background: #16a34a;
             color: white;
         }
 
         .container {
-            max-width: 1200px;
+            max-width: 1000px;
             margin: 0 auto;
             padding: 2rem;
         }
 
+        .page {
+            display: none;
+        }
+
+        .page.active {
+            display: block;
+        }
+
         .header {
             text-align: center;
-            margin-bottom: 3rem;
+            margin-bottom: 2rem;
             color: white;
         }
 
         .header h1 {
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
+            font-size: 2.2rem;
+            margin-bottom: 0.5rem;
         }
 
         .header p {
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             opacity: 0.9;
         }
 
-        .actions {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+        .form-container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 2.5rem;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .form-section {
             margin-bottom: 2rem;
+        }
+
+        .section-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #16a34a;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
             gap: 1rem;
-            flex-wrap: wrap;
+        }
+
+        label {
+            display: block;
+            font-weight: 500;
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+
+        .required {
+            color: #dc3545;
+        }
+
+        input, textarea, select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #e1e5e9;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: #16a34a;
+            box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.1);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .input-group {
+            position: relative;
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 0.75rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #16a34a;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .input-group input, .input-group select {
+            padding-left: 2.5rem;
+        }
+
+        .input-group select {
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6,9 12,15 18,9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 0.7rem center;
+            background-size: 1em;
+            padding-right: 2.5rem;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid #e1e5e9;
         }
 
         .btn {
-            padding: 0.75rem 1.5rem;
+            padding: 0.75rem 2rem;
             border: none;
             border-radius: 8px;
             cursor: pointer;
@@ -105,6 +205,12 @@
             gap: 0.5rem;
             font-weight: 500;
             transition: all 0.3s ease;
+            font-size: 1rem;
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
         }
 
         .btn-primary {
@@ -112,237 +218,153 @@
             color: white;
         }
 
-        .btn-primary:hover {
-            background: #5a6fd8;
+        .btn-primary:hover:not(:disabled) {
+            background: #15803d;
             transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(22, 163, 74, 0.3);
         }
 
         .btn-secondary {
-            background: rgba(255, 255, 255, 0.2);
+            background: #6b7280;
             color: white;
-            border: 1px solid rgba(255, 255, 255, 0.3);
         }
 
         .btn-secondary:hover {
-            background: rgba(255, 255, 255, 0.3);
+            background: #4b5563;
+            transform: translateY(-2px);
         }
 
-        .search-filters {
-            display: flex;
-            gap: 1rem;
-            flex-wrap: wrap;
+        .error-message {
+            color: #dc3545;
+            font-size: 0.875rem;
+            margin-top: 0.25rem;
+            display: none;
         }
 
-        .search-input {
-            padding: 0.75rem;
-            border: 1px solid rgba(255, 255, 255, 0.3);
+        .success-message {
+            background: #d4edda;
+            color: #155724;
+            padding: 1rem;
             border-radius: 8px;
-            background: rgba(255, 255, 255, 0.1);
-            color: white;
-            min-width: 250px;
-        }
-
-        .search-input::placeholder {
-            color: rgba(255, 255, 255, 0.7);
-        }
-
-        .search-input option {
-            background: #16a34a;
-            color: white;
-        }
-
-        .cards-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-            gap: 2rem;
-        }
-
-        .book-card {
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 15px;
-            padding: 1.5rem;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            transition: all 0.3s ease;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-        }
-
-        .book-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
-        }
-
-        .book-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 1rem;
-        }
-
-        .book-title {
-            font-size: 1.3rem;
-            font-weight: bold;
-            color: #16a34a;
-            margin-bottom: 0.5rem;
-            line-height: 1.4;
-        }
-
-        .book-author {
-            color: #667eea;
-            font-weight: 500;
-            font-size: 1rem;
-        }
-
-        .book-info {
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-            margin: 1rem 0;
-            font-size: 0.9rem;
-            color: #666;
-        }
-
-        .book-info-item {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .book-categories {
-            margin: 1rem 0;
-        }
-
-        .categories-list {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.5rem;
-            margin-top: 0.5rem;
-        }
-
-        .category-tag {
-            background: linear-gradient(135deg, #16a34a, #16a34a);
-            color: white;
-            padding: 0.3rem 0.8rem;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            font-weight: 500;
-        }
-
-        .book-actions {
-            display: flex;
-            gap: 0.5rem;
-            margin-top: 1rem;
-        }
-
-        .btn-small {
-            padding: 0.5rem 1rem;
-            font-size: 0.9rem;
-            border-radius: 6px;
-            border: none;
-            cursor: pointer;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.3rem;
-            transition: all 0.3s ease;
-        }
-
-        .btn-edit {
-            background: #28a745;
-            color: white;
-        }
-
-        .btn-edit:hover {
-            background: #218838;
-        }
-
-        .btn-delete {
-            background: #dc3545;
-            color: white;
-        }
-
-        .btn-delete:hover {
-            background: #c82333;
-        }
-
-        .empty-state {
-            text-align: center;
-            padding: 3rem;
-            color: white;
-        }
-
-        .empty-state i {
-            font-size: 4rem;
-            margin-bottom: 1rem;
-            opacity: 0.7;
+            border: 1px solid #c3e6cb;
+            margin-bottom: 1.5rem;
+            display: none;
         }
 
         .loading {
+            display: none;
             text-align: center;
             padding: 2rem;
-            color: white;
+            color: #6b7280;
         }
 
-        .loading i {
-            font-size: 2rem;
-            animation: spin 1s linear infinite;
+        .loading.show {
+            display: block;
         }
 
-        @keyframes spin {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
+        .char-counter {
+            font-size: 0.8rem;
+            color: #6c757d;
+            text-align: right;
+            margin-top: 0.25rem;
         }
 
-        .stats {
-            display: flex;
-            justify-content: center;
+        .form-help {
+            font-size: 0.875rem;
+            color: #6c757d;
+            margin-top: 0.25rem;
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 2rem;
             margin-bottom: 2rem;
-            flex-wrap: wrap;
         }
 
-        .stat-card {
-            background: rgba(255, 255, 255, 0.1);
-            padding: 1rem 2rem;
-            border-radius: 10px;
+        .stats-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 2rem;
             text-align: center;
-            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
         }
 
-        .stat-number {
+        .stats-card i {
+            font-size: 3rem;
+            color: #16a34a;
+            margin-bottom: 1rem;
+        }
+
+        .stats-card h3 {
             font-size: 2rem;
-            font-weight: bold;
+            color: #16a34a;
+            margin-bottom: 0.5rem;
         }
 
-        .stat-label {
-            font-size: 0.9rem;
-            opacity: 0.8;
-        }
-
-        .notification {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            padding: 1rem 1.5rem;
-            border-radius: 8px;
-            color: white;
+        .stats-card p {
+            color: #6b7280;
             font-weight: 500;
-            z-index: 1000;
-            opacity: 0;
-            transform: translateX(100%);
-            transition: all 0.3s ease;
         }
 
-        .notification.show {
-            opacity: 1;
-            transform: translateX(0);
+        .list-container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 2rem;
+            margin-top: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
         }
 
-        .notification.success {
-            background: #28a745;
+        .list-item {
+            padding: 1rem;
+            border-bottom: 1px solid #e5e7eb;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
-        .notification.error {
+        .list-item:last-child {
+            border-bottom: none;
+        }
+
+        .list-item h4 {
+            color: #16a34a;
+            margin-bottom: 0.25rem;
+        }
+
+        .list-item p {
+            color: #6b7280;
+            font-size: 0.9rem;
+        }
+
+        .delete-btn {
             background: #dc3545;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
+
+        .delete-btn:hover {
+            background: #c82333;
+        }
+
+        .alert {
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
+
+        .alert-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
         }
 
         @media (max-width: 768px) {
@@ -350,57 +372,20 @@
                 padding: 1rem;
             }
             
-            .actions {
-                flex-direction: column;
-                align-items: stretch;
+            .form-container {
+                padding: 1.5rem;
             }
             
-            .search-filters {
-                flex-direction: column;
-            }
-            
-            .search-input {
-                min-width: auto;
-            }
-            
-            .cards-grid {
+            .form-row {
                 grid-template-columns: 1fr;
             }
             
-            .stats {
+            .form-actions {
                 flex-direction: column;
-                gap: 1rem;
             }
         }
     </style>
 </head>
-<ul id="lista-categorias"></ul>
-
-<script type="module">
-  import { createClient } from 'https://esm.sh/@supabase/supabase-js';
-
-  const supabaseUrl = 'https://nacvjiwvlnxnjmgfxajq.supabase.co';
-  const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5hY3ZqaXd2bG54bmptZ2Z4YWpxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDY0NzQ0ODQsImV4cCI6MjA2MjA1MDQ4NH0.-L7-ENRpmNFILmHq62Skxeg7sltW_BH8_-smyyPR6lk';
-  const supabase = createClient(supabaseUrl, supabaseKey);
-
-  async function carregarCategorias() {
-    const { data, error } = await supabase.from('categorias').select('*');
-    if (error) {
-      console.error('Erro ao buscar categorias:', error.message);
-      return;
-    }
-
-    const lista = document.getElementById('lista-categorias');
-    data.forEach(categoria => {
-      const li = document.createElement('li');
-      li.textContent = categoria.nome; // ou outro campo, como categoria.nome_categoria
-      lista.appendChild(li);
-    });
-  }
-
-  carregarCategorias();
-</script>
-
 <body>
     <nav class="navbar">
         <div class="container">
@@ -408,271 +393,615 @@
                 <i class="fas fa-book"></i> Sistema de Biblioteca
             </div>
             <ul class="nav-links">
-                <li><a href="cadastrolivro.html" onclick="mostrarPagina('livros')"><i class="fas fa-book"></i> Livros</a></li>
-                <li><a href="cadastroautor.html" onclick="mostrarPagina('autores')"><i class="fas fa-user"></i> Autores</a></li>
-                <li><a href="cadastrocategoria.html" onclick="mostrarPagina('categorias')"><i class="fas fa-tags"></i> Categorias</a></li>
+                <li><a onclick="mostrarPagina('inicio')" class="active"><i class="fas fa-home"></i> Início</a></li>
+                <li><a onclick="mostrarPagina('livros')"><i class="fas fa-book"></i> Livros</a></li>
+                <li><a onclick="mostrarPagina('autores')"><i class="fas fa-user"></i> Autores</a></li>
+                <li><a onclick="mostrarPagina('categorias')"><i class="fas fa-tags"></i> Categorias</a></li>
             </ul>
         </div>
     </nav>
 
     <div class="container">
-        <div class="header">
-            <h1>Gerenciamento de Livros</h1>
-            <p>Organize e consulte o acervo da biblioteca</p>
-        </div>
-
-        <div class="stats" id="stats">
-            <div class="stat-card">
-                <div class="stat-number" id="totalLivros">0</div>
-                <div class="stat-label">Livros</div>
+        <!-- Página Inicial -->
+        <div id="inicio" class="page active">
+            <div class="header">
+                <h1><i class="fas fa-home"></i> Dashboard</h1>
+                <p>Bem-vindo ao Sistema de Biblioteca</p>
             </div>
-            <div class="stat-card">
-                <div class="stat-number" id="totalAutores">0</div>
-                <div class="stat-label">Autores</div>
+
+            <div class="loading" id="dashboardLoading">
+                <i class="fas fa-spinner fa-spin"></i>
+                <p>Carregando dados...</p>
             </div>
-            <div class="stat-card">
-                <div class="stat-number" id="totalCategorias">0</div>
-                <div class="stat-label">Categorias</div>
+
+            <div class="dashboard">
+                <div class="stats-card">
+                    <i class="fas fa-book"></i>
+                    <h3 id="totalLivros">0</h3>
+                    <p>Livros Cadastrados</p>
+                </div>
+                <div class="stats-card">
+                    <i class="fas fa-user"></i>
+                    <h3 id="totalAutores">0</h3>
+                    <p>Autores Cadastrados</p>
+                </div>
+                <div class="stats-card">
+                    <i class="fas fa-tags"></i>
+                    <h3 id="totalCategorias">0</h3>
+                    <p>Categorias Cadastradas</p>
+                </div>
             </div>
         </div>
 
-        
-            <div class="search-filters">
-                <input type="text" class="search-input" placeholder="Buscar por título ou autor..." id="searchInput">
-                <select class="search-input" id="autorFilter">
-                    <option value="">Todos os Autores</option>
-                </select>
-                <select class="search-input" id="categoriaFilter">
-                    <option value="">Todas as Categorias</option>
-                </select>
+        <!-- Página de Livros -->
+        <div id="livros" class="page">
+            <div class="header">
+                <h1><i class="fas fa-book"></i> Cadastro de Livros</h1>
+                <p>Adicione um novo livro ao sistema</p>
+            </div>
+
+            <div class="form-container">
+                <div class="success-message" id="successMessageLivro">
+                    <i class="fas fa-check-circle"></i>
+                    Livro cadastrado com sucesso!
+                </div>
+
+                <form id="livroForm">
+                    <div class="form-section"><div class="section-title">
+                            <i class="fas fa-info-circle"></i>
+                            Informações Básicas
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="titulo">Título <span class="required">*</span></label>
+                                <div class="input-group">
+                                    <i class="fas fa-book input-icon"></i>
+                                    <input type="text" id="titulo" name="titulo" required>
+                                </div>
+                                <div class="error-message" id="tituloError">Este campo é obrigatório</div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="isbn">ISBN</label>
+                                <div class="input-group">
+                                    <i class="fas fa-barcode input-icon"></i>
+                                    <input type="text" id="isbn" name="isbn">
+                                </div>
+                                <div class="form-help">Código internacional do livro</div>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="autorLivro">Autor <span class="required">*</span></label>
+                                <div class="input-group">
+                                    <i class="fas fa-user input-icon"></i>
+                                    <select id="autorLivro" name="autor" required>
+                                        <option value="">Selecione um autor</option>
+                                    </select>
+                                </div>
+                                <div class="error-message" id="autorLivroError">Selecione um autor</div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="categoriaLivro">Categoria <span class="required">*</span></label>
+                                <div class="input-group">
+                                    <i class="fas fa-tags input-icon"></i>
+                                    <select id="categoriaLivro" name="categoria" required>
+                                        <option value="">Selecione uma categoria</option>
+                                    </select>
+                                </div>
+                                <div class="error-message" id="categoriaLivroError">Selecione uma categoria</div>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="anoPublicacao">Ano de Publicação</label>
+                                <div class="input-group">
+                                    <i class="fas fa-calendar input-icon"></i>
+                                    <input type="number" id="anoPublicacao" name="anoPublicacao" min="1000" max="2025">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="editora">Editora</label>
+                                <div class="input-group">
+                                    <i class="fas fa-building input-icon"></i>
+                                    <input type="text" id="editora" name="editora">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="sinopse">Sinopse</label>
+                            <textarea id="sinopse" name="sinopse" maxlength="500" placeholder="Breve descrição do livro..."></textarea>
+                            <div class="char-counter">
+                                <span id="sinopseCount">0</span>/500 caracteres
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-secondary" onclick="limparFormulario('livroForm')">
+                            <i class="fas fa-eraser"></i> Limpar
+                        </button>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i> Salvar Livro
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="list-container">
+                <h3><i class="fas fa-list"></i> Livros Cadastrados</h3>
+                <div id="listaLivros">
+                    <p class="text-center text-muted">Nenhum livro cadastrado ainda.</p>
+                </div>
             </div>
         </div>
 
-        <div id="loading" class="loading" style="display: none;">
-            <i class="fas fa-spinner"></i>
-            <p>Carregando livros...</p>
+        <!-- Página de Autores -->
+        <div id="autores" class="page">
+            <div class="header">
+                <h1><i class="fas fa-user"></i> Cadastro de Autores</h1>
+                <p>Adicione um novo autor ao sistema</p>
+            </div>
+
+            <div class="form-container">
+                <div class="success-message" id="successMessageAutor">
+                    <i class="fas fa-check-circle"></i>
+                    Autor cadastrado com sucesso!
+                </div>
+
+                <form id="autorForm">
+                    <div class="form-section">
+                        <div class="section-title">
+                            <i class="fas fa-user-circle"></i>
+                            Dados do Autor
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="nomeAutor">Nome Completo <span class="required">*</span></label>
+                                <div class="input-group">
+                                    <i class="fas fa-user input-icon"></i>
+                                    <input type="text" id="nomeAutor" name="nome" required>
+                                </div>
+                                <div class="error-message" id="nomeAutorError">Este campo é obrigatório</div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="nacionalidade">Nacionalidade</label>
+                                <div class="input-group">
+                                    <i class="fas fa-globe input-icon"></i>
+                                    <input type="text" id="nacionalidade" name="nacionalidade">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="dataNascimento">Data de Nascimento</label>
+                                <div class="input-group">
+                                    <i class="fas fa-birthday-cake input-icon"></i>
+                                    <input type="date" id="dataNascimento" name="dataNascimento">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="dataFalecimento">Data de Falecimento</label>
+                                <div class="input-group">
+                                    <i class="fas fa-cross input-icon"></i>
+                                    <input type="date" id="dataFalecimento" name="dataFalecimento">
+                                </div>
+                                <div class="form-help">Deixe em branco se o autor ainda estiver vivo</div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="biografia">Biografia</label>
+                            <textarea id="biografia" name="biografia" maxlength="1000" placeholder="Informações sobre o autor..."></textarea>
+                            <div class="char-counter">
+                                <span id="biografiaCount">0</span>/1000 caracteres
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-secondary" onclick="limparFormulario('autorForm')">
+                            <i class="fas fa-eraser"></i> Limpar
+                        </button>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i> Salvar Autor
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="list-container">
+                <h3><i class="fas fa-list"></i> Autores Cadastrados</h3>
+                <div id="listaAutores">
+                    <p class="text-center text-muted">Nenhum autor cadastrado ainda.</p>
+                </div>
+            </div>
         </div>
 
-        <div id="livrosContainer" class="cards-grid">
-            <!-- Livros serão carregados aqui via JavaScript -->
-        </div>
+        <!-- Página de Categorias -->
+        <div id="categorias" class="page">
+            <div class="header">
+                <h1><i class="fas fa-tags"></i> Cadastro de Categorias</h1>
+                <p>Adicione uma nova categoria ao sistema</p>
+            </div>
 
-        <div id="emptyState" class="empty-state" style="display: none;">
-            <i class="fas fa-book-open"></i>
-        
-        
-         
-    
+            <div class="form-container">
+                <div class="success-message" id="successMessageCategoria">
+                    <i class="fas fa-check-circle"></i>
+                    Categoria cadastrada com sucesso!
+                </div>
+
+                <form id="categoriaForm">
+                    <div class="form-section">
+                        <div class="section-title">
+                            <i class="fas fa-tag"></i>
+                            Dados da Categoria
+                        </div>
+
+                        <div class="form-group">
+                            <label for="nomeCategoria">Nome da Categoria <span class="required">*</span></label>
+                            <div class="input-group">
+                                <i class="fas fa-tag input-icon"></i>
+                                <input type="text" id="nomeCategoria" name="nome" required>
+                            </div>
+                            <div class="error-message" id="nomeCategoriaError">Este campo é obrigatório</div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="descricaoCategoria">Descrição</label>
+                            <textarea id="descricaoCategoria" name="descricao" maxlength="300" placeholder="Descrição da categoria..."></textarea>
+                            <div class="char-counter">
+                                <span id="descricaoCategoriaCount">0</span>/300 caracteres
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-secondary" onclick="limparFormulario('categoriaForm')">
+                            <i class="fas fa-eraser"></i> Limpar
+                        </button>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i> Salvar Categoria
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="list-container">
+                <h3><i class="fas fa-list"></i> Categorias Cadastradas</h3>
+                <div id="listaCategorias">
+                    <p class="text-center text-muted">Nenhuma categoria cadastrada ainda.</p>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <script>
-        // Arrays vazios para serem preenchidos pelo usuário
+        // Dados simulados para armazenamento
         let livros = [];
         let autores = [];
         let categorias = [];
 
-        // Carregar dados iniciais
-        function carregarDados() {
-            const loading = document.getElementById('loading');
-            loading.style.display = 'block';
+        // Função para mostrar páginas
+        function mostrarPagina(pagina) {
+            // Esconder todas as páginas
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
+            
+            // Mostrar página selecionada
+            document.getElementById(pagina).classList.add('active');
+            event.target.classList.add('active');
 
-            // Simular carregamento rápido
-            setTimeout(() => {
-                try {
-                    atualizarEstatisticas();
-                    preencherFiltros();
-                    renderizarLivros(livros);
-                    // Remove a notificação de sucesso já que não há dados para carregar
-                } catch (error) {
-                    console.error('Erro ao inicializar:', error);
-                    mostrarNotificacao('Erro ao inicializar sistema.', 'error');
-                } finally {
-                    loading.style.display = 'none';
-                }
-            }, 500);
+            // Atualizar dados se for a página inicial
+            if (pagina === 'inicio') {
+                atualizarDashboard();
+            }
         }
 
-        function atualizarEstatisticas() {
+        // Função para limpar formulários
+        function limparFormulario(formId) {
+            document.getElementById(formId).reset();
+            document.querySelectorAll('.error-message').forEach(msg => msg.style.display = 'none');
+        }
+
+        // Contadores de caracteres
+        function setupCharCounters() {
+            const textareas = [
+                { id: 'sinopse', countId: 'sinopseCount' },
+                { id: 'biografia', countId: 'biografiaCount' },
+                { id: 'descricaoCategoria', countId: 'descricaoCategoriaCount' }
+            ];
+
+            textareas.forEach(({ id, countId }) => {
+                const textarea = document.getElementById(id);
+                const counter = document.getElementById(countId);
+                
+                if (textarea && counter) {
+                    textarea.addEventListener('input', () => {
+                        counter.textContent = textarea.value.length;
+                    });
+                }
+            });
+        }
+
+        // Validação de formulários
+        function validarCampo(campo, erro, mensagem) {
+            const valor = campo.value.trim();
+            const errorDiv = document.getElementById(erro);
+            
+            if (!valor) {
+                errorDiv.textContent = mensagem;
+                errorDiv.style.display = 'block';
+                campo.style.borderColor = '#dc3545';
+                return false;
+            } else {
+                errorDiv.style.display = 'none';
+                campo.style.borderColor = '#16a34a';
+                return true;
+            }
+        }
+
+        // Formulário de Livros
+        document.getElementById('livroForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const titulo = document.getElementById('titulo');
+            const autor = document.getElementById('autorLivro');
+            const categoria = document.getElementById('categoriaLivro');
+            
+            let isValid = true;
+            
+            isValid &= validarCampo(titulo, 'tituloError', 'Título é obrigatório');
+            isValid &= validarCampo(autor, 'autorLivroError', 'Selecione um autor');
+            isValid &= validarCampo(categoria, 'categoriaLivroError', 'Selecione uma categoria');
+            
+            if (isValid) {
+                const livro = {
+                    id: Date.now(),
+                    titulo: titulo.value,
+                    isbn: document.getElementById('isbn').value,
+                    autor: autor.value,
+                    categoria: categoria.value,
+                    anoPublicacao: document.getElementById('anoPublicacao').value,
+                    editora: document.getElementById('editora').value,
+                    sinopse: document.getElementById('sinopse').value
+                };
+                
+                livros.push(livro);
+                mostrarMensagemSucesso('successMessageLivro');
+                limparFormulario('livroForm');
+                atualizarListaLivros();
+                atualizarDashboard();
+            }
+        });
+
+        // Formulário de Autores
+        document.getElementById('autorForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const nome = document.getElementById('nomeAutor');
+            let isValid = validarCampo(nome, 'nomeAutorError', 'Nome é obrigatório');
+            
+            if (isValid) {
+                const autor = {
+                    id: Date.now(),
+                    nome: nome.value,
+                    nacionalidade: document.getElementById('nacionalidade').value,
+                    dataNascimento: document.getElementById('dataNascimento').value,
+                    dataFalecimento: document.getElementById('dataFalecimento').value,
+                    biografia: document.getElementById('biografia').value
+                };
+                
+                autores.push(autor);
+                mostrarMensagemSucesso('successMessageAutor');
+                limparFormulario('autorForm');
+                atualizarListaAutores();
+                atualizarSelectAutores();
+                atualizarDashboard();
+            }
+        });
+
+        // Formulário de Categorias
+        document.getElementById('categoriaForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const nome = document.getElementById('nomeCategoria');
+            let isValid = validarCampo(nome, 'nomeCategoriaError', 'Nome da categoria é obrigatório');
+            
+            if (isValid) {
+                const categoria = {
+                    id: Date.now(),
+                    nome: nome.value,
+                    descricao: document.getElementById('descricaoCategoria').value
+                };
+                
+                categorias.push(categoria);
+                mostrarMensagemSucesso('successMessageCategoria');
+                limparFormulario('categoriaForm');
+                atualizarListaCategorias();
+                atualizarSelectCategorias();
+                atualizarDashboard();
+            }
+        });
+
+        // Função para mostrar mensagem de sucesso
+        function mostrarMensagemSucesso(id) {
+            const mensagem = document.getElementById(id);
+            mensagem.style.display = 'block';
+            setTimeout(() => {
+                mensagem.style.display = 'none';
+            }, 3000);
+        }
+
+        // Atualizar listas
+        function atualizarListaLivros() {
+            const lista = document.getElementById('listaLivros');
+            
+            if (livros.length === 0) {
+                lista.innerHTML = '<p class="text-center text-muted">Nenhum livro cadastrado ainda.</p>';
+                return;
+            }
+            
+            lista.innerHTML = livros.map(livro => `
+                <div class="list-item">
+                    <div>
+                        <h4>${livro.titulo}</h4>
+                        <p>Autor: ${getAutorNome(livro.autor)} | Categoria: ${getCategoryNome(livro.categoria)}</p>
+                        ${livro.anoPublicacao ? `<p>Ano: ${livro.anoPublicacao}</p>` : ''}
+                    </div>
+                    <button class="delete-btn" onclick="excluirLivro(${livro.id})">
+                        <i class="fas fa-trash"></i> Excluir
+                    </button>
+                </div>
+            `).join('');
+        }
+
+        function atualizarListaAutores() {
+            const lista = document.getElementById('listaAutores');
+            
+            if (autores.length === 0) {
+                lista.innerHTML = '<p class="text-center text-muted">Nenhum autor cadastrado ainda.</p>';
+                return;
+            }
+            
+            lista.innerHTML = autores.map(autor => `
+                <div class="list-item">
+                    <div>
+                        <h4>${autor.nome}</h4>
+                        ${autor.nacionalidade ? `<p>Nacionalidade: ${autor.nacionalidade}</p>` : ''}
+                        ${autor.dataNascimento ? `<p>Nascimento: ${new Date(autor.dataNascimento).toLocaleDateString('pt-BR')}</p>` : ''}
+                    </div>
+                    <button class="delete-btn" onclick="excluirAutor(${autor.id})">
+                        <i class="fas fa-trash"></i> Excluir
+                    </button>
+                </div>
+            `).join('');
+        }
+
+        function atualizarListaCategorias() {
+            const lista = document.getElementById('listaCategorias');
+            
+            if (categorias.length === 0) {
+                lista.innerHTML = '<p class="text-center text-muted">Nenhuma categoria cadastrada ainda.</p>';
+                return;
+            }
+            
+            lista.innerHTML = categorias.map(categoria => `
+                <div class="list-item">
+                    <div>
+                        <h4>${categoria.nome}</h4>
+                        ${categoria.descricao ? `<p>${categoria.descricao}</p>` : ''}
+                    </div>
+                    <button class="delete-btn" onclick="excluirCategoria(${categoria.id})">
+                        <i class="fas fa-trash"></i> Excluir
+                    </button>
+                </div>
+            `).join('');
+        }
+
+        // Atualizar selects
+        function atualizarSelectAutores() {
+            const select = document.getElementById('autorLivro');
+            select.innerHTML = '<option value="">Selecione um autor</option>' +
+                autores.map(autor => `<option value="${autor.id}">${autor.nome}</option>`).join('');
+        }
+
+        function atualizarSelectCategorias() {
+            const select = document.getElementById('categoriaLivro');
+            select.innerHTML = '<option value="">Selecione uma categoria</option>' +
+                categorias.map(categoria => `<option value="${categoria.id}">${categoria.nome}</option>`).join('');
+        }
+
+        // Funções auxiliares
+        function getAutorNome(autorId) {
+            const autor = autores.find(a => a.id == autorId);
+            return autor ? autor.nome : 'Desconhecido';
+        }
+
+        function getCategoryNome(categoriaId) {
+            const categoria = categorias.find(c => c.id == categoriaId);
+            return categoria ? categoria.nome : 'Desconhecida';
+        }
+
+        // Funções de exclusão
+        function excluirLivro(id) {
+            if (confirm('Tem certeza que deseja excluir este livro?')) {
+                livros = livros.filter(livro => livro.id !== id);
+                atualizarListaLivros();
+                atualizarDashboard();
+            }
+        }
+
+        function excluirAutor(id) {
+            const temLivros = livros.some(livro => livro.autor == id);
+            if (temLivros) {
+                alert('Não é possível excluir este autor pois existem livros cadastrados para ele.');
+                return;
+            }
+            
+            if (confirm('Tem certeza que deseja excluir este autor?')) {
+                autores = autores.filter(autor => autor.id !== id);
+                atualizarListaAutores();
+                atualizarSelectAutores();
+                atualizarDashboard();
+            }
+        }
+
+        function excluirCategoria(id) {
+            const temLivros = livros.some(livro => livro.categoria == id);
+            if (temLivros) {
+                alert('Não é possível excluir esta categoria pois existem livros cadastrados nela.');
+                return;
+            }
+            
+            if (confirm('Tem certeza que deseja excluir esta categoria?')) {
+                categorias = categorias.filter(categoria => categoria.id !== id);
+                atualizarListaCategorias();
+                atualizarSelectCategorias();
+                atualizarDashboard();
+            }
+        }
+
+        // Atualizar dashboard
+        function atualizarDashboard() {
             document.getElementById('totalLivros').textContent = livros.length;
             document.getElementById('totalAutores').textContent = autores.length;
             document.getElementById('totalCategorias').textContent = categorias.length;
         }
 
-        function preencherFiltros() {
-            const autorFilter = document.getElementById('autorFilter');
-            const categoriaFilter = document.getElementById('categoriaFilter');
-
-            // Limpar filtros
-            autorFilter.innerHTML = '<option value="">Todos os Autores</option>';
-            categoriaFilter.innerHTML = '<option value="">Todas as Categorias</option>';
-
-            // Adicionar autores
-            autores.forEach(autor => {
-                const option = document.createElement('option');
-                option.value = autor.id;
-                option.textContent = autor.nome;
-                autorFilter.appendChild(option);
-            });
-
-            // Adicionar categorias
-            categorias.forEach(categoria => {
-                const option = document.createElement('option');
-                option.value = categoria.id;
-                option.textContent = categoria.nome;
-                categoriaFilter.appendChild(option);
-            });
-        }
-
-        function renderizarLivros(livrosParaRender) {
-            const container = document.getElementById('livrosContainer');
-            const emptyState = document.getElementById('emptyState');
-
-            if (livrosParaRender.length === 0) {
-                container.style.display = 'none';
-                emptyState.style.display = 'block';
-                return;
-            }
-
-            container.style.display = 'grid';
-            emptyState.style.display = 'none';
-
-            container.innerHTML = livrosParaRender.map(livro => `
-                <div class="book-card">
-                    <div class="book-header">
-                        <div>
-                            <div class="book-title">${livro.titulo}</div>
-                            <div class="book-author">por ${livro.autor_nome || 'Autor não informado'}</div>
-                        </div>
-                    </div>
-                    
-                    <div class="book-info">
-                        <div class="book-info-item">
-                            <i class="fas fa-calendar"></i>
-                            <span>Publicado em ${livro.ano_publicacao}</span>
-                        </div>
-                        <div class="book-info-item">
-                            <i class="fas fa-file-alt"></i>
-                            <span>${livro.paginas} páginas</span>
-                        </div>
-                        ${livro.isbn ? `
-                            <div class="book-info-item">
-                                <i class="fas fa-barcode"></i>
-                                <span>ISBN: ${livro.isbn}</span>
-                            </div>
-                        ` : ''}
-                    </div>
-
-                    <div class="book-categories">
-                        <div class="categories-list">
-                            ${livro.categorias.map(cat => 
-                                `<span class="category-tag">${cat}</span>`
-                            ).join('')}
-                        </div>
-                    </div>
-
-                    <div class="book-actions">
-                        <button onclick="editarLivro(${livro.id})" class="btn-small btn-edit">
-                            <i class="fas fa-edit"></i> Editar
-                        </button>
-                        <button onclick="excluirLivro(${livro.id})" class="btn-small btn-delete">
-                            <i class="fas fa-trash"></i> Excluir
-                        </button>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        function filtrarLivros() {
-            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
-            const autorId = document.getElementById('autorFilter').value;
-            const categoriaId = document.getElementById('categoriaFilter').value;
-
-            let livrosFiltrados = livros.filter(livro => {
-                const matchSearch = !searchTerm || 
-                    livro.titulo.toLowerCase().includes(searchTerm) ||
-                    (livro.autor_nome && livro.autor_nome.toLowerCase().includes(searchTerm));
-                
-                const matchAutor = !autorId || livro.autor_id == autorId;
-                
-                const matchCategoria = !categoriaId || 
-                    livro.categorias.some(cat => {
-                        const categoria = categorias.find(c => c.id == categoriaId);
-                        return categoria && cat.includes(categoria.nome);
-                    });
-                
-                return matchSearch && matchAutor && matchCategoria;
-            });
-
-            renderizarLivros(livrosFiltrados);
-        }
-
-        function excluirLivro(id) {
-            if (!confirm('Tem certeza que deseja excluir este livro?')) {
-                return;
-            }
-
-            try {
-                livros = livros.filter(livro => livro.id !== id);
-                atualizarEstatisticas();
-                filtrarLivros();
-                mostrarNotificacao('Livro excluído com sucesso!', 'success');
-            } catch (error) {
-                console.error('Erro ao excluir livro:', error);
-                mostrarNotificacao('Erro ao excluir livro. Tente novamente.', 'error');
-            }
-        }
-
-        function editarLivro(id) {
-            const livro = livros.find(l => l.id === id);
-            if (livro) {
-                mostrarNotificacao(`Editando: ${livro.titulo}`, 'success');
-                // Aqui você implementaria a lógica de edição
-            }
-        }
-
-        function adicionarLivro() {
-            mostrarNotificacao('Função de adicionar livro ainda não implementada', 'success');
-            // Aqui você implementaria a lógica de adição
-        }
-
-        function mostrarPagina(pagina) {
-            mostrarNotificacao(`Navegando para: ${pagina}`, 'success');
-            // Aqui você implementaria a navegação entre páginas
-        }
-
-        function mostrarNotificacao(mensagem, tipo = 'success') {
-            // Remove notificação existente
-            const existingNotification = document.querySelector('.notification');
-            if (existingNotification) {
-                existingNotification.remove();
-            }
-
-            // Cria nova notificação
-            const notification = document.createElement('div');
-            notification.className = `notification ${tipo}`;
-            notification.textContent = mensagem;
-            document.body.appendChild(notification);
-
-            // Mostra a notificação
-            setTimeout(() => {
-                notification.classList.add('show');
-            }, 100);
-
-            // Remove a notificação após 3 segundos
-            setTimeout(() => {
-                notification.classList.remove('show');
-                setTimeout(() => {
-                    notification.remove();
-                }, 300);
-            }, 3000);
-        }
-
-        // Event listeners
-        document.getElementById('searchInput').addEventListener('input', filtrarLivros);
-        document.getElementById('autorFilter').addEventListener('change', filtrarLivros);
-        document.getElementById('categoriaFilter').addEventListener('change', filtrarLivros);
-
-        // Carregar dados ao iniciar
-        document.addEventListener('DOMContentLoaded', carregarDados);
+        // Inicializar sistema
+        document.addEventListener('DOMContentLoaded', function() {
+            setupCharCounters();
+            atualizarDashboard();
+            
+            // Dados iniciais de exemplo
+            categorias.push(
+                { id: 1, nome: 'Ficção', descricao: 'Livros de ficção e fantasia' },
+                { id: 2, nome: 'Romance', descricao: 'Livros de romance' },
+                { id: 3, nome: 'Técnico', descricao: 'Livros técnicos e educacionais' }
+            );
+            
+            autores.push(
+                { id: 1, nome: 'Machado de Assis', nacionalidade: 'Brasileiro', dataNascimento: '1839-06-21' },
+                { id: 2, nome: 'Clarice Lispector', nacionalidade: 'Brasileira', dataNascimento: '1920-12-10' }
+            );
+            
+            atualizarSelectAutores();
+            atualizarSelectCategorias();
+            atualizarListaAutores();
+            atualizarListaCategorias();
+            atualizarDashboard();
+        });
     </script>
 </body>
 </html>
