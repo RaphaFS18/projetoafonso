@@ -33,6 +33,7 @@ class AutorController {
           error.message.includes('caracteres')) {
         res.status(400).json({ error: error.message });
       } else {
+        console.error('Erro ao criar autor:', error); // Log full error for debugging
         res.status(500).json({ error: error.message });
       }
     }

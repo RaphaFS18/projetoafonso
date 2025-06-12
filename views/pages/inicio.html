@@ -393,10 +393,10 @@
                 <i class="fas fa-book"></i> Sistema de Biblioteca
             </div>
             <ul class="nav-links">
-                <li><a onclick="mostrarPagina('inicio')" class="active"><i class="fas fa-home"></i> Início</a></li>
-                <li><a onclick="mostrarPagina('livros')"><i class="fas fa-book"></i> Livros</a></li>
-                <li><a onclick="mostrarPagina('autores')"><i class="fas fa-user"></i> Autores</a></li>
-                <li><a onclick="mostrarPagina('categorias')"><i class="fas fa-tags"></i> Categorias</a></li>
+                <li><a href="inicio.html" class="active"><i class="fas fa-home"></i> Início</a></li>
+                <li><a href="cadastrolivro.html"><i class="fas fa-book"></i> Livros</a></li>
+                <li><a href="cadastroautor.html"><i class="fas fa-user"></i> Autores</a></li>
+                <li><a href="cadastrocategoria.html"><i class="fas fa-tags"></i> Categorias</a></li>
             </ul>
         </div>
     </nav>
@@ -692,20 +692,78 @@
         let autores = [];
         let categorias = [];
 
-        // Função para mostrar páginas
-        function mostrarPagina(pagina) {
-            // Esconder todas as páginas
-            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-            document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
-            
-            // Mostrar página selecionada
-            document.getElementById(pagina).classList.add('active');
-            event.target.classList.add('active');
-
-            // Atualizar dados se for a página inicial
-            if (pagina === 'inicio') {
+        // Carregar autores do backend
+        async function carregarAutoresBackend() {
+            try {
+                const response = await fetch('http://localhost:3000/api/autores', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                });
+                if (!response.ok) {
+                    console.error('Erro ao buscar dados do backend');
+                    return;
+                }
+                const data = await response.json();
+                console.log('Dados recebidos do backend:', data);
+                autores = data; // Preenche o array autores com os dados do backend
+                atualizarListaAutores();
+                atualizarSelectAutores();
                 atualizarDashboard();
+            } catch (err) {
+                console.error('Erro ao buscar autores:', err);
             }
+        }
+
+        // Carregar categorias do backend
+        async function carregarCategoriasBackend() {
+            try {
+                const response = await fetch('http://localhost:3000/api/categorias', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                });
+                if (!response.ok) {
+                    console.error('Erro ao buscar categorias do backend');
+                    return;
+                }
+                const data = await response.json();
+                categorias = data;
+                atualizarListaCategorias();
+                atualizarSelectCategorias();
+                atualizarDashboard();
+            } catch (err) {
+                console.error('Erro ao buscar categorias:', err);
+            }
+        }
+
+        // Carregar livros do backend
+        async function carregarLivrosBackend() {
+            try {
+                const response = await fetch('http://localhost:3000/api/livros', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                });
+                if (!response.ok) {
+                    console.error('Erro ao buscar livros do backend');
+                    return;
+                }
+                const data = await response.json();
+                livros = data;
+                atualizarListaLivros();
+                atualizarDashboard();
+            } catch (err) {
+                console.error('Erro ao buscar livros:', err);
+            }
+        }
+
+        // Substituir a lógica de troca de página por redirecionamento
+        function mostrarPagina(pagina) {
+            window.location.href = `${pagina}.html`;
         }
 
         // Função para limpar formulários
@@ -713,6 +771,20 @@
             document.getElementById(formId).reset();
             document.querySelectorAll('.error-message').forEach(msg => msg.style.display = 'none');
         }
+
+        // Ajustar os links para redirecionar corretamente a partir da página inicio.html
+        const links = document.querySelectorAll('.nav-links a');
+        links.forEach(link => {
+            if (link.textContent.includes('Livros')) {
+                link.onclick = () => window.location.href = 'cadastrolivro.html';
+            } else if (link.textContent.includes('Autores')) {
+                link.onclick = () => window.location.href = 'cadastroautor.html';
+            } else if (link.textContent.includes('Categorias')) {
+                link.onclick = () => window.location.href = 'cadastrocategoria.html';
+            } else if (link.textContent.includes('Início')) {
+                link.onclick = () => window.location.href = 'inicio.html';
+            }
+        });
 
         // Contadores de caracteres
         function setupCharCounters() {
@@ -973,34 +1045,46 @@
         }
 
         // Atualizar dashboard
-        function atualizarDashboard() {
+        async function atualizarDashboard() {
+            // Integração real com o backend
+            
+
             document.getElementById('totalLivros').textContent = livros.length;
             document.getElementById('totalAutores').textContent = autores.length;
             document.getElementById('totalCategorias').textContent = categorias.length;
+
+
         }
 
         // Inicializar sistema
         document.addEventListener('DOMContentLoaded', function() {
             setupCharCounters();
-            atualizarDashboard();
-            
-            // Dados iniciais de exemplo
-            categorias.push(
-                { id: 1, nome: 'Ficção', descricao: 'Livros de ficção e fantasia' },
-                { id: 2, nome: 'Romance', descricao: 'Livros de romance' },
-                { id: 3, nome: 'Técnico', descricao: 'Livros técnicos e educacionais' }
-            );
-            
-            autores.push(
-                { id: 1, nome: 'Machado de Assis', nacionalidade: 'Brasileiro', dataNascimento: '1839-06-21' },
-                { id: 2, nome: 'Clarice Lispector', nacionalidade: 'Brasileira', dataNascimento: '1920-12-10' }
-            );
-            
-            atualizarSelectAutores();
+            // Carregar dados do backend
+            carregarAutoresBackend();
+            carregarCategoriasBackend();
+            carregarLivrosBackend();
             atualizarSelectCategorias();
-            atualizarListaAutores();
             atualizarListaCategorias();
             atualizarDashboard();
+        });
+
+        // Adicionar lógica para ativar o botão correspondente à página atual
+        const currentPage = window.location.pathname.split('/').pop();
+        const navLinks = document.querySelectorAll('.nav-links a');
+        navLinks.forEach(link => {
+            if (link.href.includes(currentPage)) {
+                link.classList.add('active');
+            } else {
+                link.classList.remove('active');
+            }
+        });
+
+        // Adicionar lógica para forçar o carregamento da nova página ao trocar de URL
+        window.addEventListener('load', () => {
+            const currentPage = window.location.pathname.split('/').pop();
+            if (currentPage !== 'inicio.html') {
+                window.location.href = currentPage;
+            }
         });
     </script>
 </body>

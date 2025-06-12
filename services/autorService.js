@@ -31,7 +31,7 @@ class AutorService {
     try {
       return await Autor.create(data);
     } catch (error) {
-      throw new Error(`Erro ao criar autor: ${error.message}`);
+      throw error;
     }
   }
 

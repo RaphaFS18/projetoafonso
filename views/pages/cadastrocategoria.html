@@ -347,9 +347,10 @@
                 <i class="fas fa-book"></i> Sistema de Biblioteca
             </div>
             <ul class="nav-links">
-                <li><a href="cadastrolivro.html" onclick="mostrarPagina('livros')"><i class="fas fa-book"></i> Livros</a></li>
-                <li><a href="cadastroautor.html" onclick="mostrarPagina('autores')"><i class="fas fa-user"></i> Autores</a></li>
-                <li><a href="cadastrocategoria.html" onclick="mostrarPagina('categorias')"><i class="fas fa-tags"></i> Categorias</a></li>
+                <li><a href="inicio.html" class="active"><i class="fas fa-home"></i> Início</a></li>
+                <li><a href="cadastrolivro.html"><i class="fas fa-book"></i> Livros</a></li>
+                <li><a href="cadastroautor.html"><i class="fas fa-user"></i> Autores</a></li>
+                <li><a href="cadastrocategoria.html"><i class="fas fa-tags"></i> Categorias</a></li>
             </ul>
         </div>
     </nav>
@@ -532,13 +533,21 @@
                     descricao: document.getElementById('descricao').value.trim() || null
                 };
 
+                // Integração real com o backend
+                const response = await fetch('http://localhost:3000/api/categorias', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(categoriaData)
+                });
+
 
                 if (!response.ok) {
                     const errorData = await response.json();
                     throw new Error(errorData.message || 'Erro ao salvar categoria');
                 }
 
-                const result = await response.json();
 
                 // Mostrar mensagem de sucesso
                 successMessage.style.display = 'block';
@@ -585,6 +594,22 @@
         document.addEventListener('DOMContentLoaded', function() {
             carregarCategoriasExistentes();
         });
+
+        // Adicionar lógica para ativar o botão correspondente à página atual
+        const currentPage = window.location.pathname.split('/').pop();
+        const navLinks = document.querySelectorAll('.nav-links a');
+        navLinks.forEach(link => {
+            if (link.href.includes(currentPage)) {
+                link.classList.add('active');
+            } else {
+                link.classList.remove('active');
+            }
+        });
+
+        // Substituir a lógica de troca de página por redirecionamento
+        function mostrarPagina(pagina) {
+            window.location.href = `${pagina}.html`;
+        }
 
     </script>
 </body>
