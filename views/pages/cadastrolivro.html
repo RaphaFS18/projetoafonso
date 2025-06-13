@@ -166,7 +166,7 @@
         .input-group select {
             appearance: none;
             background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6,9 12,15 18,9'%3e%3c/polyline%3e%3c/svg%3e");
-            background-repeat: no-repeat;
+            background-repeat: no-no-repeat;
             background-position: right 0.7rem center;
             background-size: 1em;
             padding-right: 2.5rem;
@@ -329,20 +329,22 @@
                         </div>
 
                         <div class="form-group">
-                            <label for="anoPublicacao">Ano de Publicação</label>
+                            <label for="anoPublicacao">Ano de Publicação <span class="required">*</span></label>
                             <div class="input-group">
                                 <i class="fas fa-calendar input-icon"></i>
-                                <input type="number" id="anoPublicacao" name="anoPublicacao" min="1000" max="2024" placeholder="2024">
+                                <input type="number" id="anoPublicacao" name="anoPublicacao" min="1000" max="2025" placeholder="2025" required>
                             </div>
+                            <div class="error-message" id="anoPublicacaoError">Por favor, informe um ano de publicação válido (entre 1000 e o ano atual).</div>
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label for="paginas">Páginas</label>
+                        <label for="paginas">Páginas <span class="required">*</span></label>
                         <div class="input-group">
                             <i class="fas fa-file-alt input-icon"></i>
-                            <input type="number" id="paginas" name="paginas" min="1" max="10000" placeholder="0">
+                            <input type="number" id="paginas" name="paginas" min="1" max="10000" placeholder="1" required>
                         </div>
+                        <div class="error-message" id="paginasError">Por favor, informe o número de páginas (deve ser maior que zero).</div>
                     </div>
                 </div>
 
@@ -368,6 +370,10 @@
         // Função para carregar autores do banco de dados
         async function carregarAutoresSelect() {
             const select = document.getElementById('autorLivro');
+            if (!select) {
+                console.error("Elemento 'autorLivro' não encontrado no DOM. Verifique o ID e o carregamento do HTML.");
+                return;
+            }
             select.innerHTML = '<option value="">Carregando autores...</option>';
             
             try {
@@ -395,6 +401,10 @@
         // Função para carregar categorias do banco de dados
         async function carregarCategoriasSelect() {
             const select = document.getElementById('categoriaLivro');
+            if (!select) {
+                console.error("Elemento 'categoriaLivro' não encontrado no DOM. Verifique o ID e o carregamento do HTML.");
+                return;
+            }
             select.innerHTML = '<option value="">Carregando categorias...</option>';
             
             try {
@@ -419,146 +429,201 @@
             }
         }
 
-        // Cadastro de Livro
-        document.getElementById('livroForm').addEventListener('submit', async function(e) {
-            e.preventDefault();
-            
-            const titulo = document.getElementById('tituloLivro').value.trim();
-            const autorId = document.getElementById('autorLivro').value;
-            const categoriaId = document.getElementById('categoriaLivro').value;
-            const isbn = document.getElementById('isbn').value.trim();
-            const anoPublicacao = document.getElementById('anoPublicacao').value;
-            const pagina = document.getElementById('paginas').value;
-            
-            let isValid = true;
-            
-            // Validações
-            if (!titulo) {
-                document.getElementById('tituloError').style.display = 'block';
-                isValid = false;
-            } else {
-                document.getElementById('tituloError').style.display = 'none';
-            }
-            
-            if (!autorId) {
-                document.getElementById('autorError').style.display = 'block';
-                isValid = false;
-            } else {
-                document.getElementById('autorError').style.display = 'none';
-            }
-            
-            if (!categoriaId) {
-                document.getElementById('categoriaError').style.display = 'block';
-                isValid = false;
-            } else {
-                document.getElementById('categoriaError').style.display = 'none';
-            }
-            
-            if (!isValid) return;
-            
-            const autor = dados.autores.find(a => a.id === autorId);
-            const categoria = dados.categorias.find(c => c.id === categoriaId);
-            
-            const novoLivro = {
-                titulo: titulo,
-                autor: autor,
-                categoria: categoria,
-                isbn: isbn,
-                anoPublicacao: anoPublicacao,
-                pagina: pagina
-            };
-            
-            try {
-                console.log('Enviando livro:', novoLivro);
-                
-                // Integração real com o backend
-                const response = await fetch('http://localhost:3000/api/livros', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(novoLivro)
-                });
-                
-                if (response.ok) {
-                    const resultado = await response.json();
-                    console.log('Livro cadastrado com sucesso:', resultado);
-                    
-                    document.getElementById('successMessageLivro').style.display = 'block';
-                    setTimeout(() => {
-                        document.getElementById('successMessageLivro').style.display = 'none';
-                        resetForm();
-                    }, 3000);
-                } else {
-                    // Tentar obter detalhes do erro
-                    let errorMessage = `Erro ${response.status}: ${response.statusText}`;
-                    try {
-                        const errorData = await response.json();
-                        errorMessage = errorData.message || errorData.error || errorMessage;
-                        console.error('Detalhes do erro:', errorData);
-                    } catch (e) {
-                        console.error('Erro ao obter detalhes:', e);
-                    }
-                    
-                    throw new Error(errorMessage);
-                }
-                
-            } catch (error) {
-                console.error('Erro ao cadastrar livro:', error);
-                
-                // Mostrar erro mais detalhado
-                let mensagemErro = 'Erro ao cadastrar livro. ';
-                
-                if (error.name === 'TypeError' && error.message.includes('fetch')) {
-                    mensagemErro += 'Verifique se o servidor está rodando na porta 3000.';
-                } else {
-                    mensagemErro += error.message || 'Tente novamente.';
-                }
-                
-                alert(mensagemErro);
-            }
-        });
-
         // Função para resetar formulário
         function resetForm() {
-            document.getElementById('livroForm').reset();
+            const form = document.getElementById('livroForm');
+            if (form) {
+                form.reset();
+            }
             document.querySelectorAll('.error-message').forEach(error => {
                 error.style.display = 'none';
             });
         }
 
-        // Limpar mensagens de erro quando o usuário começar a digitar
-        document.getElementById('tituloLivro').addEventListener('input', function() {
-            document.getElementById('tituloError').style.display = 'none';
-        });
-
-        document.getElementById('autorLivro').addEventListener('change', function() {
-            document.getElementById('autorError').style.display = 'none';
-        });
-
-        document.getElementById('categoriaLivro').addEventListener('change', function() {
-            document.getElementById('categoriaError').style.display = 'none';
-        });
-
-        // Inicialização da aplicação
+        // All DOM-related interactions must be inside DOMContentLoaded
         document.addEventListener('DOMContentLoaded', async function() {
-            // Carregar dados do banco de dados
+            // Carregar autores e categorias assim que o DOM estiver pronto
             await Promise.all([
                 carregarAutoresSelect(),
                 carregarCategoriasSelect()
             ]);
-        });
 
-        // Adicionar animações suaves aos botões
-        document.querySelectorAll('.btn').forEach(btn => {
-            btn.addEventListener('mouseenter', function() {
-                this.style.transform = 'translateY(-2px)';
-            });
+            // Get references to elements for event listeners
+            const livroForm = document.getElementById('livroForm');
+            const tituloLivro = document.getElementById('tituloLivro');
+            const autorLivro = document.getElementById('autorLivro');
+            const categoriaLivro = document.getElementById('categoriaLivro');
+            const anoPublicacao = document.getElementById('anoPublicacao');
+            const paginas = document.getElementById('paginas');
             
-            btn.addEventListener('mouseleave', function() {
-                this.style.transform = 'translateY(0)';
+            // Check if all essential elements are found
+            if (!livroForm || !tituloLivro || !autorLivro || !categoriaLivro || !anoPublicacao || !paginas) {
+                console.error("Um ou mais elementos essenciais do formulário não foram encontrados. A aplicação pode não funcionar corretamente.");
+                return; // Stop execution if critical elements are missing
+            }
+
+            // Cadastro de Livro - Event Listener
+            livroForm.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                
+                const titulo = tituloLivro.value.trim();
+                const autorId = autorLivro.value;
+                const categoriaId = categoriaLivro.value;
+                const isbn = document.getElementById('isbn').value.trim(); // ISBN is not strictly required
+                const anoPublicacaoInput = anoPublicacao.value;
+                const paginasInput = paginas.value;
+                
+                let isValid = true;
+                
+                // Validações (client-side)
+                if (!titulo) {
+                    document.getElementById('tituloError').style.display = 'block';
+                    isValid = false;
+                } else {
+                    document.getElementById('tituloError').style.display = 'none';
+                }
+                
+                if (!autorId) {
+                    document.getElementById('autorError').style.display = 'block';
+                    isValid = false;
+                } else {
+                    document.getElementById('autorError').style.display = 'none';
+                }
+                
+                if (!categoriaId) {
+                    document.getElementById('categoriaError').style.display = 'block';
+                    isValid = false;
+                } else {
+                    document.getElementById('categoriaError').style.display = 'none';
+                }
+
+                const currentYear = new Date().getFullYear();
+                if (!anoPublicacaoInput || isNaN(parseInt(anoPublicacaoInput)) || parseInt(anoPublicacaoInput) < 1000 || parseInt(anoPublicacaoInput) > currentYear) {
+                    document.getElementById('anoPublicacaoError').style.display = 'block';
+                    isValid = false;
+                } else {
+                    document.getElementById('anoPublicacaoError').style.display = 'none';
+                }
+                
+                // NEW VALIDATION FOR PAGINAS
+                const parsedPaginasValue = parseInt(paginasInput);
+                if (!paginasInput || isNaN(parsedPaginasValue) || parsedPaginasValue < 1) {
+                    document.getElementById('paginasError').style.display = 'block';
+                    isValid = false;
+                } else {
+                    document.getElementById('paginasError').style.display = 'none';
+                }
+                // END NEW VALIDATION
+
+                if (!isValid) return;
+                
+                const novoLivro = {
+                    titulo: titulo,
+                    autor_id: autorId, 
+                    isbn: isbn.length > 0 ? isbn : null, // Send null if ISBN is empty
+                    ano_publicacao: parseInt(anoPublicacaoInput),
+                    paginas: parsedPaginasValue
+                };
+                
+                try {
+                    console.log('Enviando livro (corrigido):', novoLivro);
+                    
+                    const response = await fetch('http://localhost:3000/api/livros', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(novoLivro)
+                    });
+                    
+                    if (response.ok) {
+                        const resultado = await response.json();
+                        console.log('Livro cadastrado com sucesso:', resultado);
+                        
+                        document.getElementById('successMessageLivro').style.display = 'block';
+                        
+                        // After successfully creating the book, associate it with the category
+                        const associacaoResponse = await fetch('http://localhost:3000/api/livros-categorias/associar', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                livro_id: resultado.id,
+                                categoria_id: categoriaId
+                            })
+                        });
+
+                        if (!associacaoResponse.ok) {
+                            const errorData = await associacaoResponse.json();
+                            console.error('Erro ao associar categoria ao livro:', errorData.error);
+                            alert('Livro cadastrado, mas houve um erro ao associar a categoria: ' + (errorData.error || 'Erro desconhecido.'));
+                        } else {
+                            console.log('Livro associado à categoria com sucesso!');
+                        }
+
+                        setTimeout(() => {
+                            document.getElementById('successMessageLivro').style.display = 'none';
+                            resetForm();
+                        }, 3000);
+                    } else {
+                        let errorMessage = `Erro ${response.status}: ${response.statusText}`;
+                        try {
+                            const errorData = await response.json();
+                            errorMessage = errorData.message || errorData.error || errorMessage;
+                            console.error('Detalhes do erro:', errorData);
+                        } catch (e) {
+                            console.error('Erro ao obter detalhes:', e);
+                        }
+                        
+                        throw new Error(errorMessage);
+                    }
+                    
+                } catch (error) {
+                    console.error('Erro ao cadastrar livro:', error);
+                    
+                    let mensagemErro = 'Erro ao cadastrar livro. ';
+                    
+                    if (error.name === 'TypeError' && error.message.includes('fetch')) {
+                        mensagemErro += 'Verifique se o servidor está rodando na porta 3000.';
+                    } else {
+                        mensagemErro += error.message || 'Tente novamente.';
+                    }
+                    
+                    alert(mensagemErro);
+                }
             });
-        });
+
+            // Limpar mensagens de erro quando o usuário começar a digitar
+            tituloLivro.addEventListener('input', function() {
+                document.getElementById('tituloError').style.display = 'none';
+            });
+
+            autorLivro.addEventListener('change', function() {
+                document.getElementById('autorError').style.display = 'none';
+            });
+
+            categoriaLivro.addEventListener('change', function() {
+                document.getElementById('categoriaError').style.display = 'none';
+            });
+
+            anoPublicacao.addEventListener('input', function() {
+                document.getElementById('anoPublicacaoError').style.display = 'none';
+            });
+
+            paginas.addEventListener('input', function() {
+                document.getElementById('paginasError').style.display = 'none';
+            });
+
+            // Adicionar animações suaves aos botões
+            document.querySelectorAll('.btn').forEach(btn => {
+                btn.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-2px)';
+                });
+                
+                btn.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0)';
+                });
+            });
+        }); // End of DOMContentLoaded
     </script>
 </body>
 </html>

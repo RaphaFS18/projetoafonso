@@ -9,7 +9,7 @@
     "test": "jest",
     "test:coverage": "jest --coverage",
     "init-db": "node scripts/runSQLScript.js",
-    "migration": "node scripts/runSQLScript.js"
+    "migration": "node scripts/runSQLScript.js && node scripts/development/runSeedData.js"
   },
   "dependencies": {
     "cors": "^2.8.5",
