@@ -289,15 +289,13 @@ O sistema possui 4 models principais que implementam a lógica de negócio para 
 
 ### 3.2. Arquitetura (Semana 5)
 
-*Posicione aqui o diagrama de arquitetura da sua solução de aplicação web. Atualize sempre que necessário.*
+![image](https://res.cloudinary.com/dpks4ergy/image/upload/v1750094396/projeto_afonsov.drawio_nmqlhx.png)
 
 **Instruções para criação do diagrama de arquitetura**  
 - **Model**: A camada que lida com a lógica de negócios e interage com o banco de dados.
 - **View**: A camada responsável pela interface de usuário.
 - **Controller**: A camada que recebe as requisições, processa as ações e atualiza o modelo e a visualização.
   
-*Adicione as setas e explicações sobre como os dados fluem entre o Model, Controller e View.*
-
 ### 3.3. Wireframes (Semana 03)
 
 *Posicione aqui as imagens do wireframe construído para sua solução e, opcionalmente, o link para acesso (mantenha o link sempre público para visualização).*
@@ -308,9 +306,8 @@ O sistema possui 4 models principais que implementam a lógica de negócio para 
 
 
 ### 3.5. Protótipo de alta fidelidade (Semana 05)
-
-*Posicione aqui algumas imagens demonstrativas de seu protótipo de alta fidelidade e o link para acesso ao protótipo completo (mantenha o link sempre público para visualização).*
-
+![image](https://res.cloudinary.com/dpks4ergy/image/upload/v1750094442/Captura_de_Tela_2025-06-16_%C3%A0s_14.20.11_c7d16h.png)
+![image](https://res.cloudinary.com/dpks4ergy/image/upload/v1750094442/Captura_de_Tela_2025-06-16_%C3%A0s_14.20.20_k5gndx.png)
 ### 3.6. WebAPI e endpoints (Semana 05)
 
 <a href="wad2.md">Abrir especificações endpoints</a>
@@ -318,9 +315,22 @@ O sistema possui 4 models principais que implementam a lógica de negócio para 
 
 ### 3.7 Interface e Navegação (Semana 07)
 
-*Descreva e ilustre aqui o desenvolvimento do frontend do sistema web, explicando brevemente o que foi entregue em termos de código e sistema. Utilize prints de tela para ilustrar.*
+O desenvolvimento do frontend do sistema web foi realizado utilizando as tecnologias HTML5, CSS3 e JavaScript, com foco em criar uma interface intuitiva, responsiva e de fácil usabilidade. Todas as páginas seguem um padrão visual moderno, com navegação clara e componentes reutilizáveis, mantendo a identidade visual do sistema.
 
----
+As interfaces implementadas incluem:
+
+Página inicial com navegação entre os principais módulos (Livros, Autores, Categorias)
+
+Formulários de cadastro com validação de campos e mensagens de erro e sucesso
+
+Componentes visuais como ícones, breadcrumbs, menus, botões e indicadores de carregamento
+
+
+Destaques visuais para facilitar a experiência do usuário, como campos obrigatórios, placeholders e contadores de caracteres.
+Além disso, foram utilizados ícones da biblioteca Font Awesome para enriquecer a usabilidade e o design. Também foram aplicados efeitos visuais como hover, transições suaves e feedback visual em ações como salvar de salvar o autor.
+![image](https://res.cloudinary.com/dpks4ergy/image/upload/v1750094771/Captura_de_Tela_2025-06-16_%C3%A0s_14.25.50_svrhnt.png)
+
+
 
 ## <a name="c4"></a>4. Desenvolvimento da Aplicação Web (Semana 8)
 
@@ -331,8 +341,8 @@ O sistema possui 4 models principais que implementam a lógica de negócio para 
 
 ### 4.2 Conclusões e Trabalhos Futuros (Semana 8)
 
-*Indique pontos fortes e pontos a melhorar de maneira geral.*
-*Relacione também quaisquer outras ideias que você tenha para melhorias futuras.*
+Fazer um menu com todos os livros, autores e categorias cadastrados com mais informações como de fotos, curiosidades etc...
+
 
 
 
