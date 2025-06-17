@@ -298,12 +298,7 @@ O sistema possui 4 models principais que implementam a lógica de negócio para 
   
 ### 3.3. Wireframes (Semana 03)
 
-*Posicione aqui as imagens do wireframe construído para sua solução e, opcionalmente, o link para acesso (mantenha o link sempre público para visualização).*
-
 ### 3.4. Guia de estilos (Semana 05)
-
-*Descreva aqui orientações gerais para o leitor sobre como utilizar os componentes do guia de estilos de sua solução.*
-
 
 ### 3.5. Protótipo de alta fidelidade (Semana 05)
 ![image](https://res.cloudinary.com/dpks4ergy/image/upload/v1750094442/Captura_de_Tela_2025-06-16_%C3%A0s_14.20.11_c7d16h.png)
@@ -347,7 +342,7 @@ Fazer um menu com todos os livros, autores e categorias cadastrados com mais inf
 
 ## <a name="c5"></a>5. Referências
 
-_Incluir as principais referências de seu projeto, para que seu parceiro possa consultar caso ele se interessar em aprofundar. Um exemplo de referência de livro e de site:_<br>
+Usei tudo como exemplo, nada de real.<br>
 
 ---
 ---
